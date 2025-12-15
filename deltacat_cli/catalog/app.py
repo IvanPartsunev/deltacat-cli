@@ -28,7 +28,12 @@ def init() -> None:
 
     examples_text.append('🔷 Azure Blob Storage:\n', style='bold magenta')
     examples_text.append(
-        '   abfs://container@account.dfs.core.windows.net/deltacat-root\n', style='dim'
+        '   abfs://container@account.dfs.core.windows.net/deltacat-root\n\n',
+        style='dim',
+    )
+
+    examples_text.append(
+        "⚠️ If catalog don't exists new catalog will be created\n", style='bold red'
     )
 
     console.print(
