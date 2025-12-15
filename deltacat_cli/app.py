@@ -4,27 +4,10 @@ from typing import Annotated
 
 import typer
 from rich import print as rich_print
-from rich.console import Console
-from rich.spinner import SPINNERS
+
+from deltacat_cli.config import app
 
 from . import __version__
-
-
-# Register custom spinner
-SPINNERS['cat'] = {
-    'frames': ['😸', '😺', '😼'],
-    'interval': 300,
-}
-
-app = typer.Typer(
-    name='deltacat-cli',
-    help='A CLI application for working with deltacat',
-    add_completion=False,
-)
-console = Console()
-err_console = Console(stderr=True)
-
-existing_usernames = ['rick', 'morty']
 
 
 def name_callback(value: str) -> str:
@@ -71,5 +54,6 @@ def main() -> None:
     app()
 
 
+# Optional: allows running with `python -m deltacat_cli.app`
 if __name__ == '__main__':
     main()

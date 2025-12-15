@@ -64,11 +64,8 @@ clean: ## Clean cache and temporary files
 
 test-cli: ## Test the CLI application with sample commands
 	@echo "🧪 Testing CLI application..."
-	@echo "Testing with valid name (Camila):"
-	uv run deltacat-cli hello --name Camila
-	@echo ""
-	@echo "Testing with invalid name (should fail):"
-	uv run deltacat-cli hello --name John || echo "✅ Validation working correctly!"
+	@echo "Testing version command:"
+	uv run deltacat-cli version
 	@echo ""
 	@echo "Testing help command:"
 	uv run deltacat-cli --help
