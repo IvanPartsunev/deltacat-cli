@@ -5,6 +5,7 @@ from rich import print as rich_print
 
 from deltacat_cli import __version__
 from deltacat_cli.catalog.app import app as catalog_app
+from deltacat_cli.table.app import app as table_app
 
 
 app = typer.Typer(
@@ -14,6 +15,7 @@ app = typer.Typer(
 )
 
 app.add_typer(catalog_app, name='catalog')
+app.add_typer(table_app, name='table')
 
 
 @app.command()
