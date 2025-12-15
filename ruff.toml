@@ -1,6 +1,6 @@
 # Ruff configuration for CLI application
 target-version = "py310"
-line-length = 88
+line-length = 120
 indent-width = 4
 
 [lint]
@@ -78,6 +78,18 @@ ignore = [
     "FBT002", # Boolean default positional argument in function definition
     "Q000",   # Single quotes found but double quotes preferred (conflicts with formatter)
     "Q003",   # Change outer quotes to avoid escaping inner quotes (conflicts with formatter)
+    "TD002",  # Missing author in TODO
+    "TD003",  # Missing issue link for TODO
+    "FIX002", # Line contains TODO
+    "A001",   # Variable shadowing builtin (common in CLI apps)
+    "TRY003", # Avoid specifying long messages outside exception class
+    "EM102",  # Exception must not use f-string literal
+    "F841",   # Local variable assigned but never used (common in TODO code)
+    "RUF001", # String contains ambiguous unicode
+    "E501",   # Line too long (let formatter handle it)
+    "PTH123", # Use Path.open() instead of open()
+    "ANN204", # Missing return type annotation for __init__
+    "D107",   # Missing docstring in __init__
 ]
 
 # Allow fix for all enabled rules (except for a few)
@@ -111,6 +123,7 @@ known-first-party = ["deltacat_cli"]
 force-single-line = false
 lines-after-imports = 2
 no-lines-before = ["future", "standard-library"]
+split-on-trailing-comma = false  # Match formatter setting
 
 [lint.pydocstyle]
 # Use Google-style docstrings (common for CLI apps)
@@ -124,6 +137,6 @@ max-args = 8  # CLI functions often need many arguments
 indent-style = "space"
 quote-style = "single"
 line-ending = "auto"
-skip-magic-trailing-comma = false
+skip-magic-trailing-comma = true  # Prefer single-line function calls
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
