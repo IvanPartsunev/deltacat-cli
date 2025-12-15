@@ -97,7 +97,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 ]
 
 # CLI entry points might need some flexibility
-"main.py" = [
+"deltacat_cli/app.py" = [
     "T20",    # Allow print statements in main CLI file
 ]
 
@@ -107,7 +107,7 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [lint.isort]
 # Configure import sorting for CLI apps
-known-first-party = ["deltacat"]
+known-first-party = ["deltacat_cli"]
 force-single-line = false
 lines-after-imports = 2
 no-lines-before = ["future", "standard-library"]

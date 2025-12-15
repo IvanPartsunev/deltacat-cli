@@ -65,21 +65,70 @@ clean: ## Clean cache and temporary files
 test-cli: ## Test the CLI application with sample commands
 	@echo "🧪 Testing CLI application..."
 	@echo "Testing with valid name (Camila):"
-	uv run python main.py --name Camila
+	uv run deltacat-cli hello --name Camila
 	@echo ""
 	@echo "Testing with invalid name (should fail):"
-	uv run python main.py --name John || echo "✅ Validation working correctly!"
+	uv run deltacat-cli hello --name John || echo "✅ Validation working correctly!"
 	@echo ""
 	@echo "Testing help command:"
-	uv run python main.py --help
+	uv run deltacat-cli --help
+
+test-unit: ## Run unit tests with pytest
+	@echo "🧪 Running unit tests..."
+	@echo "No tests implemented yet - add tests to tests/ directory"
+
+test-all: test-cli ## Run all tests (currently just CLI tests)
+	@echo "✅ All tests completed!"
 
 test-cli-installed: ## Test the installed CLI command
 	@echo "🧪 Testing installed CLI command..."
 	@echo "Testing with valid name (Camila):"
-	uv run deltacat-cli --name Camila
+	uv run deltacat-cli hello --name Camila
 	@echo ""
 	@echo "Testing with invalid name (should fail):"
-	uv run deltacat-cli --name John || echo "✅ Validation working correctly!"
+	uv run deltacat-cli hello --name John || echo "✅ Validation working correctly!"
+	@echo ""
+	@echo "Testing version command:"
+	uv run deltacat-cli version
+
+build: ## Build the package (wheel and sdist)
+	@echo "🏗️  Building package..."
+	uv build
+	@echo "✅ Package built successfully!"
+	@echo "Built files:"
+	@ls -la dist/
+
+build-wheel: ## Build only the wheel
+	@echo "🏗️  Building wheel..."
+	uv build --wheel
+	@echo "✅ Wheel built successfully!"
+
+build-sdist: ## Build only the source distribution
+	@echo "🏗️  Building source distribution..."
+	uv build --sdist
+	@echo "✅ Source distribution built successfully!"
+
+clean-build: ## Clean build artifacts
+	@echo "🧹 Cleaning build artifacts..."
+	rm -rf dist/
+	rm -rf build/
+	rm -rf *.egg-info/
+	@echo "✅ Build artifacts cleaned!"
+
+install-local: ## Install the package locally in development mode
+	@echo "📦 Installing package locally..."
+	uv pip install -e .
+	@echo "✅ Package installed locally!"
+
+publish-test: build ## Publish to TestPyPI (requires credentials)
+	@echo "🚀 Publishing to TestPyPI..."
+	@echo "Note: You need to configure your TestPyPI credentials first"
+	uv publish --repository testpypi dist/*
+
+publish: build ## Publish to PyPI (requires credentials)
+	@echo "🚀 Publishing to PyPI..."
+	@echo "Note: You need to configure your PyPI credentials first"
+	uv publish dist/*
 
 dev-setup: install ## Complete development environment setup
 	@echo "🚀 Development environment setup complete!"
@@ -91,3 +140,21 @@ fix: format ## Alias for format command (lint-fix + format)
 
 all-checks: check pre-commit ## Run all possible checks (check + pre-commit)
 	@echo "✅ All checks and hooks passed!"
+
+release-check: all-checks build ## Run all checks and build package for release
+	@echo "🎯 Release check complete - package is ready!"
+
+ci-local: ## Run the same checks as CI locally
+	@echo "🚀 Running CI checks locally..."
+	@$(MAKE) lint
+	@$(MAKE) format-check
+	@$(MAKE) check
+	@$(MAKE) pre-commit
+	@$(MAKE) test-cli
+	@$(MAKE) build
+	@echo "✅ All CI checks passed locally!"
+
+publish-pypi: build ## Publish to PyPI (requires authentication)
+	@echo "🚀 Publishing to PyPI..."
+	@echo "Note: Make sure you're authenticated with PyPI"
+	uv publish dist/*
