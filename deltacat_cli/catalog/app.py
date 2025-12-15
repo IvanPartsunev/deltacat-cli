@@ -42,11 +42,14 @@ def init() -> None:
         '\n[bold cyan]Enter full Catalog root path[/bold cyan] '
         '[dim](see examples above)[/dim]',
         console=console,
+        default='deltacat',
     )
 
     # Get catalog name
     catalog_name = Prompt.ask(
-        '\n[bold cyan]Enter Catalog name[/bold cyan]', console=console
+        '\n[bold cyan]Enter Catalog name[/bold cyan]',
+        console=console,
+        default='default',
     )
 
     console.print(
