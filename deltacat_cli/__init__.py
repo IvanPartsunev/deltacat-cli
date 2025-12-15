@@ -3,8 +3,3 @@
 __version__ = '0.1.0'
 __author__ = 'Ivan Partsunev'
 __email__ = 'ivan.partsunev@gmail.com'
-
-from .app import app
-
-
-__all__ = ['app']
