@@ -65,10 +65,10 @@ clean: ## Clean cache and temporary files
 test-cli: ## Test the CLI application with sample commands
 	@echo "🧪 Testing CLI application..."
 	@echo "Testing version command:"
-	uv run deltacat-cli version
+	uv run deltacat version
 	@echo ""
 	@echo "Testing help command:"
-	uv run deltacat-cli --help
+	uv run deltacat --help
 
 test-unit: ## Run unit tests with pytest
 	@echo "🧪 Running unit tests..."
@@ -80,13 +80,13 @@ test-all: test-cli ## Run all tests (currently just CLI tests)
 test-cli-installed: ## Test the installed CLI command
 	@echo "🧪 Testing installed CLI command..."
 	@echo "Testing with valid name (Camila):"
-	uv run deltacat-cli hello --name Camila
+	uv run deltacat hello --name Camila
 	@echo ""
 	@echo "Testing with invalid name (should fail):"
-	uv run deltacat-cli hello --name John || echo "✅ Validation working correctly!"
+	uv run deltacat hello --name John || echo "✅ Validation working correctly!"
 	@echo ""
 	@echo "Testing version command:"
-	uv run deltacat-cli version
+	uv run deltacat version
 
 build: ## Build the package (wheel and sdist)
 	@echo "🏗️  Building package..."
