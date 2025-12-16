@@ -1,21 +1,17 @@
-"""Catalog management commands."""
-
 import typer
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.text import Text
 
-from deltacat_cli.catalog.context import catalog_context
 from deltacat_cli.catalog.operations import initialize_catalog
 from deltacat_cli.config import console
 
 
-app = typer.Typer(name='Catalog')
-
+app = typer.Typer()
 
 @app.command()
 def init() -> None:
-    """Initialize a new DeltaCat catalog with interactive prompts."""
+    """Initialize a new DeltaCat catalog."""
     # Display examples and explanation for catalog root
     examples_text = Text()
     examples_text.append('\nCatalog Root Path Options:\n\n', style='bold cyan')
@@ -54,27 +50,3 @@ def init() -> None:
     except Exception as e:
         console.print(f'❌ Error initializing catalog: {e}', style='bold red')
         raise typer.Exit(1) from e
-
-
-@app.command()
-def set(catalog_name: str, root: str) -> None:
-    """Set the current catalog for this session."""
-    catalog_context.set_catalog(catalog_name, root)
-
-
-@app.command()
-def current() -> None:
-    """Show the current active catalog."""
-    try:
-        name, root = catalog_context.get_catalog_info()
-        console.print(f'📌 Current catalog: [bold green]{name}[/bold green]')
-        console.print(f'   Root: {root}', style='dim')
-        console.print(f'   Full path: {root}/{name}', style='dim')
-    except typer.Exit:
-        pass  # Error already printed by get_catalog_info
-
-
-@app.command()
-def clear() -> None:
-    """Clear the current catalog configuration."""
-    catalog_context.clear_catalog()
