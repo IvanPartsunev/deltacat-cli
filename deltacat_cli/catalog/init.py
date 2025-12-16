@@ -10,7 +10,7 @@ from deltacat_cli.config import console
 app = typer.Typer()
 
 @app.command()
-def init() -> None:
+def initialize() -> None:
     """Initialize a new DeltaCat catalog."""
     # Display examples and explanation for catalog root
     examples_text = Text()

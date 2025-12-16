@@ -31,7 +31,7 @@ class CatalogContext:
 
         if not name or not root:
             console.print('❌ No catalog configured in this session.', style='bold red')
-            console.print('Set catalog with: [bold cyan]deltacat-cli catalog set[/bold cyan]')
+            console.print('Set catalog with: [bold cyan]deltacat catalog set[/bold cyan]')
             raise typer.Exit(1)
 
         return name, root

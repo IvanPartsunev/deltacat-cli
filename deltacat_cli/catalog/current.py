@@ -6,9 +6,8 @@ from deltacat_cli.config import console
 
 app = typer.Typer()
 
-
 @app.command()
-def current() -> None:
+def show() -> None:
     """Show the current active catalog."""
     try:
         name, root = catalog_context.get_catalog_info()
