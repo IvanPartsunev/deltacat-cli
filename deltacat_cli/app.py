@@ -14,38 +14,39 @@ def version_callback(value: bool) -> None:
     """Show version and exit."""
     if value:
         rich_print(f'deltacat version: {__version__}')
-        raise typer.Exit()
+        raise typer.Exit(0)
 
 
 app = typer.Typer(
-    name='deltacat', 
-    help='A CLI application for working with deltacat', 
+    name='deltacat',
+    help='A CLI application for working with deltacat',
     add_completion=False,
     pretty_exceptions_enable=not SHOW_TRACEBACK,
-    pretty_exceptions_show_locals=SHOW_TRACEBACK
+    pretty_exceptions_show_locals=SHOW_TRACEBACK,
 )
+
 
 @app.callback()
 def main_callback(
     version: bool = typer.Option(
-        False, 
-        "--version", 
-        "-v", 
-        callback=version_callback, 
+        False,
+        '--version',
+        '-v',
+        callback=version_callback,
         is_eager=True,
-        help="Show version and exit"
-    )
+        help='Show version and exit',
+    ),
 ) -> None:
-    """
-    DeltaCat CLI - A command-line interface for working with deltacat.
-    
+    """DeltaCat CLI - A command-line interface for working with deltacat.
+
     Use 'deltacat catalog init initialize' to get started.
     """
-    pass
+
 
 app.add_typer(catalog_app, name='catalog')
 app.add_typer(namespace_app, name='namespace')
 app.add_typer(table_app, name='table')
+
 
 def main() -> None:
     """Entry point for the CLI application."""
@@ -54,6 +55,5 @@ def main() -> None:
     except Exception as e:
         if SHOW_TRACEBACK:
             raise
-        else:
-            err_console.print(f"❌ Error: {e}", style="bold red")
-            raise typer.Exit(1) from e
+        err_console.print(f'❌ Error: {e}', style='bold red')
+        raise typer.Exit(1) from e

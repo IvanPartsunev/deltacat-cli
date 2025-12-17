@@ -1,4 +1,3 @@
-import typer
 from rich.console import Console
 from rich.spinner import SPINNERS
 

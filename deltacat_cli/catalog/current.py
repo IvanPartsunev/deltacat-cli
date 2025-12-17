@@ -6,6 +6,7 @@ from deltacat_cli.config import console
 
 app = typer.Typer()
 
+
 @app.command()
 def show_catalog() -> None:
     """Show the current active catalog."""

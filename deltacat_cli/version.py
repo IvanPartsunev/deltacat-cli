@@ -6,6 +6,7 @@ from deltacat_cli import __version__
 
 app = typer.Typer()
 
+
 @app.command()
 def version() -> None:
     """Show the version of deltacat."""
