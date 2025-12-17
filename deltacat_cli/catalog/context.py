@@ -5,7 +5,7 @@ import os
 import typer
 from deltacat import Catalog, CatalogProperties
 
-from deltacat_cli.config import console
+from deltacat_cli.config import console, err_console
 
 
 class CatalogContext:
@@ -30,7 +30,7 @@ class CatalogContext:
         root = os.environ.get('DELTACAT_CLI_CATALOG_ROOT')
 
         if not name or not root:
-            console.print('❌ No catalog configured in this session.', style='bold red')
+            err_console.print('❌ No catalog configured in this session.', style='bold red')
             console.print('Set catalog with: [bold cyan]deltacat catalog set[/bold cyan]')
             raise typer.Exit(1)
 
