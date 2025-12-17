@@ -1,24 +1,20 @@
-"""Table operations for deltacat."""
-
 import os
 import typer
-from deltacat_cli.table.create import app as create_app, create_table
-from deltacat_cli.table.info import app as info_app, show_info
-from deltacat_cli.table.list import app as list_app, list_tables
+from deltacat_cli.namespace.alter import app as alter_app, alter_namespace_cmd
 from deltacat_cli.config import console, err_console
 
 
-app = typer.Typer(name='Table')
+app = typer.Typer(name='Namespace')
 
 @app.callback()
-def table_callback(ctx: typer.Context) -> None:
+def namespace_callback(ctx: typer.Context) -> None:
     """
-    Table operations for DeltaCat.
+    Namespace operations for DeltaCat.
     
-    All table commands require a catalog to be configured first.
+    All namespace commands require a catalog to be configured first.
     Use 'deltacat catalog init initialize' or 'deltacat catalog set' to configure a catalog.
     """
-    # All table commands require a catalog to be set
+    # All namespace commands require a catalog to be set
     catalog_name = os.environ.get('DELTACAT_CLI_CATALOG_NAME')
     catalog_root = os.environ.get('DELTACAT_CLI_CATALOG_ROOT')
     
@@ -28,6 +24,4 @@ def table_callback(ctx: typer.Context) -> None:
         raise typer.Exit(1)
 
 # Extract docstrings from the actual command functions
-app.add_typer(list_app, name='list', help=list_tables.__doc__)
-app.add_typer(create_app, name='create', help=create_table.__doc__)
-app.add_typer(info_app, name='info', help=show_info.__doc__)
+app.add_typer(alter_app, name='alter', help=alter_namespace_cmd.__doc__)
