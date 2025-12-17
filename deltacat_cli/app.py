@@ -20,7 +20,7 @@ def version_callback(value: bool) -> None:
 app = typer.Typer(
     name='deltacat',
     help='A CLI application for working with deltacat',
-    add_completion=False,
+    add_completion=True,
     pretty_exceptions_enable=not SHOW_TRACEBACK,
     pretty_exceptions_show_locals=SHOW_TRACEBACK,
 )
@@ -29,7 +29,7 @@ app = typer.Typer(
 @app.callback()
 def main_callback(
     version: bool = typer.Option(
-        False,
+        False,  # noqa: FBT003
         '--version',
         '-v',
         callback=version_callback,

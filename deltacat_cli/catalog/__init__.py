@@ -1,16 +1,10 @@
-import os
-
 import typer
 
-from deltacat_cli.catalog.clear import app as clear_app
 from deltacat_cli.catalog.clear import clear_catalog
-from deltacat_cli.catalog.current import app as current_app
+from deltacat_cli.catalog.context import catalog_context
 from deltacat_cli.catalog.current import show_catalog
-from deltacat_cli.catalog.init import app as init_app
 from deltacat_cli.catalog.init import initialize
-from deltacat_cli.catalog.set import app as set_app
 from deltacat_cli.catalog.set import set_catalog
-from deltacat_cli.config import console, err_console
 
 
 app = typer.Typer(name='Catalog')
@@ -28,20 +22,12 @@ def catalog_callback(ctx: typer.Context) -> None:
 
     # Get the command being executed
     if ctx.invoked_subcommand and ctx.invoked_subcommand not in commands_without_catalog:
-        # Check if catalog environment variables are set
-        catalog_name = os.environ.get('DELTACAT_CLI_CATALOG_NAME')
-        catalog_root = os.environ.get('DELTACAT_CLI_CATALOG_ROOT')
-
-        if not catalog_name or not catalog_root:
-            err_console.print('❌ No catalog configured in this session.', style='bold red')
-            console.print(
-                'Set catalog with: [bold cyan]deltacat catalog set[/bold cyan] or [bold cyan]deltacat catalog init initialize[/bold cyan]'
-            )
-            raise typer.Exit(1)
+        # Check if catalog is configured - will raise typer.Exit if not configured
+        catalog_context.get_catalog_info()
 
 
-# Extract docstrings from the actual command functions
-app.add_typer(init_app, name='init', help=initialize.__doc__)
-app.add_typer(set_app, name='set', help=set_catalog.__doc__)
-app.add_typer(current_app, name='current', help=show_catalog.__doc__)
-app.add_typer(clear_app, name='clear', help=clear_catalog.__doc__)
+# Add commands directly (no nested structure)
+app.command(name='init', help=initialize.__doc__)(initialize)
+app.command(name='set', help=set_catalog.__doc__)(set_catalog)
+app.command(name='current', help=show_catalog.__doc__)(show_catalog)
+app.command(name='clear', help=clear_catalog.__doc__)(clear_catalog)

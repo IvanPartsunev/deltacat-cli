@@ -16,13 +16,13 @@ def create_namespace_cmd(name: Annotated[str, typer.Argument(help='Namespace nam
     try:
         # Get current catalog info
         catalog_name, _ = catalog_context.get_catalog_info()
-        catalog = catalog_context.get_catalog()
+        catalog_context.get_catalog()
 
         console.print(
             f'🔄 Creating namespace "[bold cyan]{name}[/bold cyan]" in catalog "[bold yellow]{catalog_name}[/bold yellow]"'
         )
 
-        create_namespace(namespace=name, catalog=catalog)
+        create_namespace(namespace=name, catalog=catalog_name)
         console.print(f'✅ Namespace created: [bold cyan]{name}[/bold cyan]', style='green')
 
     except Exception as e:

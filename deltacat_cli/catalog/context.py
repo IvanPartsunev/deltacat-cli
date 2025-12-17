@@ -1,37 +1,52 @@
 """Simple catalog context management."""
 
-import os
+import json
+from pathlib import Path
 
+import deltacat
 import typer
-from deltacat import Catalog, CatalogProperties
 
+from deltacat import Catalog, CatalogProperties, get_catalog, put_catalog
 from deltacat_cli.config import console, err_console
 
 
 class CatalogContext:
-    """Simple catalog context using environment variables."""
+    """Simple catalog context using environment variables and file persistence."""
 
     def __init__(self):
         self._cached_catalog: Catalog | None = None
         self._cached_name: str | None = None
         self._cached_root: str | None = None
+        self._config_file = Path.home() / '.deltacat_cli_config.json'
 
     def set_catalog(self, name: str, root: str) -> None:
-        """Set the current catalog via environment variables."""
-        os.environ['DELTACAT_CLI_CATALOG_NAME'] = name
-        os.environ['DELTACAT_CLI_CATALOG_ROOT'] = root
+        """Set the current catalog and persist to file."""
+        # Persist to file
+        self._save_config({'name': name, 'root': root})
+
         # Clear cache when setting new catalog
         self._clear_cache()
         console.print(f'✅ Catalog set to "{name}" at "{root}"', style='green')
 
     def get_catalog_info(self) -> tuple[str, str]:
         """Get current catalog name and root, or raise error if not set."""
-        name = os.environ.get('DELTACAT_CLI_CATALOG_NAME')
-        root = os.environ.get('DELTACAT_CLI_CATALOG_ROOT')
+        config = self._load_config()
+
+        if not config:
+            err_console.print('❌ No catalog configured.', style='bold red')
+            console.print(
+                'Set catalog with: [bold cyan]deltacat catalog set[/bold cyan] or [bold cyan]deltacat catalog init[/bold cyan]'
+            )
+            raise typer.Exit(1)
+
+        name = config.get('name')
+        root = config.get('root')
 
         if not name or not root:
-            err_console.print('❌ No catalog configured in this session.', style='bold red')
-            console.print('Set catalog with: [bold cyan]deltacat catalog set[/bold cyan]')
+            err_console.print('❌ Invalid catalog configuration.', style='bold red')
+            console.print(
+                'Set catalog with: [bold cyan]deltacat catalog set[/bold cyan] or [bold cyan]deltacat catalog init[/bold cyan]'
+            )
             raise typer.Exit(1)
 
         return name, root
@@ -44,18 +59,24 @@ class CatalogContext:
         if self._cached_catalog and self._cached_name == name and self._cached_root == root:
             return self._cached_catalog
 
-        # Create and cache new catalog
+        # Try to get from deltacat registry first
+        # Always create and register the catalog since each command runs in a new process
         catalog_props = CatalogProperties(root=f'{root}/{name}')
         self._cached_catalog = Catalog(config=catalog_props)
+        
+        # Register with deltacat's global registry
+        put_catalog(name, self._cached_catalog)
+        
         self._cached_name = name
         self._cached_root = root
-
         return self._cached_catalog
 
     def clear_catalog(self) -> None:
         """Clear the current catalog configuration."""
-        os.environ.pop('DELTACAT_CLI_CATALOG_NAME', None)
-        os.environ.pop('DELTACAT_CLI_CATALOG_ROOT', None)
+        # Remove config file
+        if self._config_file.exists():
+            self._config_file.unlink()
+
         self._clear_cache()
         console.print('✅ Catalog configuration cleared', style='yellow')
 
@@ -64,6 +85,26 @@ class CatalogContext:
         self._cached_catalog = None
         self._cached_name = None
         self._cached_root = None
+
+    def _save_config(self, config: dict) -> None:
+        """Save configuration to file."""
+        try:
+            with open(self._config_file, 'w') as f:
+                json.dump(config, f)
+        except (OSError, json.JSONEncodeError):
+            # Silently fail if we can't save config
+            pass
+
+    def _load_config(self) -> dict | None:
+        """Load configuration from file."""
+        try:
+            if self._config_file.exists():
+                with open(self._config_file) as f:
+                    return json.load(f)
+        except (OSError, json.JSONDecodeError):
+            # Silently fail if we can't load config
+            pass
+        return None
 
 
 # Global context instance

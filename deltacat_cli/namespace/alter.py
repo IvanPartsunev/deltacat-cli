@@ -22,13 +22,13 @@ def alter_namespace_cmd(
     try:
         # Get current catalog info
         catalog_name, _ = catalog_context.get_catalog_info()
-        catalog = catalog_context.get_catalog()
+        catalog_context.get_catalog()
 
         console.print(
             f'🔄 Renaming namespace "[bold cyan]{name}[/bold cyan]" to "[bold green]{new_name}[/bold green]" in catalog "[bold yellow]{catalog_name}[/bold yellow]"'
         )
 
-        alter_namespace(namespace=name, new_namespace=new_name, catalog=catalog)
+        alter_namespace(namespace=name, new_namespace=new_name, catalog=catalog_name)
         console.print(
             f'✅ Namespace renamed: [bold cyan]{name}[/bold cyan] → [bold green]{new_name}[/bold green]', style='green'
         )
