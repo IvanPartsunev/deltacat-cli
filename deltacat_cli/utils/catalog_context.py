@@ -6,7 +6,7 @@ from pathlib import Path
 import typer
 
 from deltacat import Catalog, CatalogProperties, put_catalog
-from deltacat_cli.config import console, err_console, CONFIG_ERROR_MODE
+from deltacat_cli.config import CONFIG_ERROR_MODE, console, err_console
 
 
 class CatalogContext:
@@ -25,7 +25,9 @@ class CatalogContext:
 
         # Clear cache when setting new catalog
         self._clear_cache()
-        console.print(f'Catalog set to "{name}" at "{root}"', style='green')
+        console.print(f'Catalog [bold]set[/bold] to: [bold blue]{name}[/bold blue]', style='green')
+        console.print(f'Root: {root}', style='dim')
+        console.print(f'Full path: {root}/{name}', style='dim')
 
     def get_catalog_info(self) -> tuple[str, str]:
         """Get current catalog name and root, or raise error if not set."""
@@ -47,6 +49,10 @@ class CatalogContext:
                 'Set catalog with: [bold cyan]deltacat catalog set[/bold cyan] or [bold cyan]deltacat catalog init[/bold cyan]'
             )
             raise typer.Exit(1)
+
+        console.print(f'Current catalog: [bold blue]{name}[/bold blue]', style='green')
+        console.print(f'Root: {root}', style='dim')
+        console.print(f'Full path: {root}/{name}', style='dim')
 
         return name, root
 
@@ -76,7 +82,7 @@ class CatalogContext:
             self._config_file.unlink()
 
         self._clear_cache()
-        console.print('Catalog configuration cleared', style='yellow')
+        console.print('Catalog configuration cleared', style='bold yellow')
 
     def _clear_cache(self) -> None:
         """Clear the cached catalog."""
@@ -93,10 +99,9 @@ class CatalogContext:
             if CONFIG_ERROR_MODE == 'strict':
                 err_console.print(f'Error: Could not save config to {self._config_file}: {e}', style='bold red')
                 raise typer.Exit(1) from e
-            elif CONFIG_ERROR_MODE == 'warn':
+            if CONFIG_ERROR_MODE == 'warn':
                 console.print(f'Warning: Could not save config to {self._config_file}: {e}', style='yellow')
                 console.print('   Configuration will not persist between sessions.', style='dim')
-            # 'silent' mode does nothing
 
     def _load_config(self) -> dict | None:
         """Load configuration from file."""
@@ -108,7 +113,7 @@ class CatalogContext:
             if CONFIG_ERROR_MODE == 'strict':
                 err_console.print(f'Error: Could not load config from {self._config_file}: {e}', style='bold red')
                 raise typer.Exit(1) from e
-            elif CONFIG_ERROR_MODE == 'warn':
+            if CONFIG_ERROR_MODE == 'warn':
                 console.print(f'Warning: Could not load config from {self._config_file}: {e}', style='yellow')
                 console.print('   You may need to reconfigure your catalog.', style='dim')
         return None
