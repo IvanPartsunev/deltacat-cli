@@ -3,12 +3,24 @@
 
 install: ## Install the package in development mode
 	uv sync --dev
-	uv run pre-commit install
 	@echo ""
 	@echo "Installation complete."
 	@echo "Run the following command to activate the virtual environment:"
 	@echo "  source .venv/bin/activate"
-	@echo "Pre-commit hooks have been installed automatically."
+	@echo ""
+	@echo "To enable shell autocompletion, run:"
+	@echo "  deltacat --install-completion"
+
+install-completion: ## Install shell autocompletion for deltacat CLI (automatic)
+	@echo "🚀 Installing shell autocompletion automatically..."
+	uv run deltacat --install-completion
+	@echo "✅ Autocompletion installed! Restart your terminal to use it."
+	@echo "📖 For detailed setup guide, see: AUTOCOMPLETION_SETUP.md"
+
+install-completion-manual: ## Install shell autocompletion with manual instructions
+	@echo "🚀 Installing shell autocompletion with instructions..."
+	uv run deltacat completion --install
+	@echo "📖 For detailed setup guide, see: AUTOCOMPLETION_SETUP.md"
 
 help: ## Show this help message
 	@echo "Available commands:"

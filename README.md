@@ -13,15 +13,42 @@ pip install deltacat-cli
 ## Usage
 
 ```bash
-# Greet someone (only Camila is allowed)
-deltacat-cli hello --name Camila
-
 # Show version
-deltacat-cli version
+deltacat version
 
 # Show help
-deltacat-cli --help
+deltacat --help
+
+# Catalog operations
+deltacat catalog init
+deltacat catalog show
+deltacat catalog set
+
+# Namespace operations  
+deltacat namespace --help
 ```
+
+### Shell Autocompletion
+
+To enable tab completion for the CLI commands:
+
+```bash
+# Automatic installation (recommended)
+deltacat --install-completion
+
+# Then restart your terminal - that's it!
+
+# Alternative: Manual installation with instructions
+deltacat completion --install
+
+# Or show the completion script for manual setup
+deltacat --show-completion
+```
+
+After installation, you can use tab completion:
+- `deltacat <TAB>` - shows available commands
+- `deltacat catalog <TAB>` - shows catalog subcommands
+- `deltacat --<TAB>` - shows available options
 
 ## Development
 
@@ -42,14 +69,17 @@ make install
 ### Available Commands
 
 ```bash
-make help              # Show all available commands
-make format            # Format and fix code
-make lint              # Run linting checks
-make check             # Run all checks
-make test-cli          # Test CLI functionality
-make build             # Build the package
-make ci-local          # Run the same checks as CI locally
-make release-check     # Full release validation
+make help                 # Show all available commands
+make install             # Install package and dependencies
+make install-completion  # Install shell autocompletion
+make show-completion     # Show completion script
+make format              # Format and fix code
+make lint                # Run linting checks
+make check               # Run all checks
+make test-cli            # Test CLI functionality
+make build               # Build the package
+make ci-local            # Run the same checks as CI locally
+make release-check       # Full release validation
 ```
 
 ### Running Tests

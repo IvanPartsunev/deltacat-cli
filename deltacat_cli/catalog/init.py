@@ -1,5 +1,4 @@
 import typer
-from google.api_core.path_template import expand
 from rich.console import Group
 from rich.panel import Panel
 from rich.prompt import Prompt
@@ -14,6 +13,7 @@ app = typer.Typer()
 
 @app.command(name='init')
 def initialize() -> None:
+    """Create and set new Deltacat Catalog"""
     sections = [
         Text("🏠  Local filesystem:", style="bold green"),
         Text("  ~/.deltacat", style="dim"),
