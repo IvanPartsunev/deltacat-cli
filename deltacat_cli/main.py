@@ -5,10 +5,12 @@ from rich import print as rich_print
 
 from deltacat_cli import __version__
 from deltacat_cli.catalog import app as catalog_app
-from deltacat_cli.catalog.context import catalog_context
 from deltacat_cli.config import SHOW_TRACEBACK, err_console
 from deltacat_cli.namespace import app as namespace_app
-from deltacat_cli.table import app as table_app
+from deltacat_cli.utils.catalog_context import catalog_context
+
+
+# from deltacat_cli.table import app as table_app
 
 
 def version_callback(value: bool) -> None:
@@ -52,7 +54,7 @@ def main_callback(
 
 app.add_typer(catalog_app, name='catalog', help='Catalog operations for DeltaCat')
 app.add_typer(namespace_app, name='namespace', help='Namespace operations for DeltaCat')
-app.add_typer(table_app, name='table', help='Table operations for DeltaCat')
+# app.add_typer(table_app, name='table', help='Table operations for DeltaCat')
 
 
 def main() -> None:
