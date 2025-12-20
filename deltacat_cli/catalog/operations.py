@@ -10,7 +10,6 @@ def initialize_catalog(root: str, catalog_name: str) -> CatalogProperties:
     catalog_obj = Catalog(config=catalog)
     put_catalog(catalog_name, catalog_obj)
 
-    # Set as current catalog in this session
     catalog_context.set_catalog(catalog_name, root)
 
     return catalog

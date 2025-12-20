@@ -13,7 +13,7 @@ app = typer.Typer()
 @app.command()
 def initialize() -> None:
     """Initialize a new DeltaCat catalog."""
-    # Display examples and explanation for catalog root
+
     examples_text = Text()
     examples_text.append('\nCatalog Root Path Options:\n\n', style='bold cyan')
 
@@ -33,14 +33,12 @@ def initialize() -> None:
 
     console.print(Panel(examples_text, title='DeltaCat Catalog Configuration', border_style='blue'))
 
-    # Get catalog root with enhanced prompt
     root = Prompt.ask(
         '\n[bold cyan]Enter full Catalog root path[/bold cyan] [dim](see examples above)[/dim]',
         console=console,
         default='deltacat',
     )
 
-    # Get catalog name
     catalog_name = Prompt.ask('\n[bold cyan]Enter Catalog name[/bold cyan]', console=console, default='default')
 
     console.print(f"\n✅ Initializing catalog '[bold]{catalog_name}[/bold]' at '[bold]{root}[/bold]'", style='green')

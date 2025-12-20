@@ -106,5 +106,4 @@ class CatalogContext:
         return None
 
 
-# Global context instance
 catalog_context = CatalogContext()
