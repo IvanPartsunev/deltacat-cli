@@ -1,45 +1,48 @@
 import typer
+from google.api_core.path_template import expand
+from rich.console import Group
 from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.text import Text
 
-from deltacat_cli.catalog.operations import initialize_catalog
 from deltacat_cli.config import console
+from deltacat_cli.utils.initialize_dc_catalog import initialize_catalog
 
 
 app = typer.Typer()
 
 
-@app.command()
+@app.command(name='init')
 def initialize() -> None:
-    """Initialize a new DeltaCat catalog."""
+    sections = [
+        Text("🏠 Local filesystem:", style="bold green"),
+        Text("~/.deltacat", style="dim"),
+        Text(),
+        Text("☁️  AWS S3:", style="bold blue"),
+        Text("s3://my-bucket/deltacat-root", style="dim"),
+        Text(),
+        Text("🌐 Google Cloud Storage:", style="bold yellow"),
+        Text("gs://my-bucket/deltacat-root", style="dim"),
+        Text(),
+        Text("🔷 Azure Blob Storage:", style="bold magenta"),
+        Text("abfs://container@account.dfs.core.windows.net/deltacat-root", style="dim")]
 
-    examples_text = Text()
-    examples_text.append('\nCatalog Root Path Options:\n\n', style='bold cyan')
+    # Use Group to properly stack the sections
+    content = Group(*sections)
 
-    examples_text.append('🏠 Local filesystem:\n', style='bold green')
-    examples_text.append('   ~/.deltacat\n\n', style='dim')
-
-    examples_text.append('☁️  AWS S3:\n', style='bold blue')
-    examples_text.append('   s3://my-bucket/deltacat-root\n\n', style='dim')
-
-    examples_text.append('🌐 Google Cloud Storage:\n', style='bold yellow')
-    examples_text.append('   gs://my-bucket/deltacat-root\n\n', style='dim')
-
-    examples_text.append('🔷 Azure Blob Storage:\n', style='bold magenta')
-    examples_text.append('   abfs://container@account.dfs.core.windows.net/deltacat-root\n\n', style='dim')
-
-    examples_text.append("⚠️ If catalog doesn't exist, a new catalog will be created\n", style='bold red')
-
-    console.print(Panel(examples_text, title='DeltaCat Catalog Configuration', border_style='blue'))
-
+    console.print(Panel(
+        content,
+        title="[bold blue]Catalog Root Path Options[/bold blue]",
+        border_style="green",
+        padding=(1, 2),
+        expand=False,
+    ))
     root = Prompt.ask(
-        '\n[bold cyan]Enter full Catalog root path[/bold cyan] [dim](see examples above)[/dim]',
+        '\n[bold green]Enter full Catalog root path[/bold green] [dim](see examples above)[/dim]',
         console=console,
-        default='deltacat',
     )
 
-    catalog_name = Prompt.ask('\n[bold cyan]Enter Catalog name[/bold cyan]', console=console, default='default')
+    catalog_name = Prompt.ask('\n[bold blue]Enter Catalog name[/bold blue]', console=console)
 
     try:
         console.print(f'🔄 Initializing catalog "[cyan]{catalog_name}[/cyan]" at "[yellow]{root}[/yellow]"...')

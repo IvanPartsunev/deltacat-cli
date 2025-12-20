@@ -1,15 +1,15 @@
 import typer
 
-from deltacat_cli.catalog.clear import clear_catalog
-from deltacat_cli.catalog.current import show_catalog
-from deltacat_cli.catalog.init import initialize
-from deltacat_cli.catalog.set import set_catalog
+from deltacat_cli.catalog.clear import app as clear_app
+from deltacat_cli.catalog.show import app as show_app
+from deltacat_cli.catalog.init import app as initialize_app
+from deltacat_cli.catalog.set import app as set_app
 
 
-app = typer.Typer(name='Catalog')
+app = typer.Typer()
 
-# Add commands directly (no nested structure)
-app.command(name='init', help=initialize.__doc__)(initialize)
-app.command(name='set', help=set_catalog.__doc__)(set_catalog)
-app.command(name='current', help=show_catalog.__doc__)(show_catalog)
-app.command(name='clear', help=clear_catalog.__doc__)(clear_catalog)
+app.add_typer(initialize_app)
+app.add_typer(set_app)
+app.add_typer(show_app)
+app.add_typer(clear_app)
+
