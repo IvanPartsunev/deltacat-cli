@@ -10,7 +10,7 @@ from deltacat_cli.utils.catalog_context import catalog_context
 app = typer.Typer()
 
 
-@app.command()
+@app.command(name='alter')
 def alter_namespace_cmd(
     name: Annotated[str, typer.Argument(help='Current namespace name')],
     new_name: Annotated[str, typer.Argument(help='New namespace name')],
@@ -21,11 +21,12 @@ def alter_namespace_cmd(
     """
     try:
         # Get current catalog info
-        catalog_name, _ = catalog_context.get_catalog_info()
-        catalog_context.get_catalog()
-
+        catalog_name, _ = catalog_context.get_catalog_info(silent=True)
         console.print(f'🔄 Renaming namespace "[cyan]{name}[/cyan]" to "[green]{new_name}[/green]"...')
+
+        catalog_context.get_catalog()
         alter_namespace(namespace=name, new_namespace=new_name, catalog=catalog_name)
+
         console.print(f'✅ Namespace renamed: [bold cyan]{name}[/bold cyan] → [bold green]{new_name}[/bold green]', style='green')
 
     except Exception as e:

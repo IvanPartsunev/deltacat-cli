@@ -12,7 +12,7 @@ app = typer.Typer()
 
 
 @app.command(name='init')
-def initialize() -> None:
+def initialize_cmd() -> None:
     """Create and set new Catalog"""
     sections = [
         Text("🏠  Local filesystem:", style="bold green"),

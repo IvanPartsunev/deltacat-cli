@@ -7,7 +7,7 @@ app = typer.Typer()
 
 
 @app.command(name='show')
-def show_catalog() -> None:
+def show_catalog_cmd() -> None:
     """Show the current active Catalog."""
-    catalog_context.get_catalog_info()
+    catalog_context.get_catalog_info(silent=False)
 

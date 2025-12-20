@@ -1,10 +1,10 @@
 import typer
 
-from deltacat_cli.namespace.alter import alter_namespace_cmd
-from deltacat_cli.namespace.create import create_namespace_cmd
+from deltacat_cli.namespace.alter import app as alter_app
+from deltacat_cli.namespace.create import app as creat_app
 
 
-app = typer.Typer(name='Namespace')
+app = typer.Typer()
 
-app.command(name='alter', help=alter_namespace_cmd.__doc__)(alter_namespace_cmd)
-app.command(name='create', help=create_namespace_cmd.__doc__)(create_namespace_cmd)
+app.add_typer(alter_app)
+app.add_typer(creat_app)

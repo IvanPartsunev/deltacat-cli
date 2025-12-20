@@ -26,10 +26,10 @@ class CatalogContext:
         # Clear cache when setting new catalog
         self._clear_cache()
         console.print(f'Catalog [bold]set[/bold] to: [bold blue]{name}[/bold blue]', style='green')
-        console.print(f'Root: {root}', style='dim')
-        console.print(f'Full path: {root}/{name}', style='dim')
+        console.print(f'Root: [bold bright_magenta]{root}[/bold bright_magenta]', style='dim')
+        console.print(f'Full path: [bold bright_magenta]{root}/{name}[/bold bright_magenta]', style='dim')
 
-    def get_catalog_info(self) -> tuple[str, str]:
+    def get_catalog_info(self, silent: bool = True) -> tuple[str, str]:
         """Get current catalog name and root, or raise error if not set."""
         config = self._load_config()
 
@@ -50,15 +50,17 @@ class CatalogContext:
             )
             raise typer.Exit(1)
 
-        console.print(f'Current catalog: [bold blue]{name}[/bold blue]', style='green')
-        console.print(f'Root: {root}', style='dim')
-        console.print(f'Full path: {root}/{name}', style='dim')
+        # Only print if not silent
+        if not silent:
+            console.print(f'Current catalog: [bold blue]{name}[/bold blue]', style='green')
+            console.print(f'Root: [bold bright_magenta]{root}[/bold bright_magenta]', style='dim')
+            console.print(f'Full path: [bold bright_magenta]{root}/{name}[/bold bright_magenta]', style='dim')
 
         return name, root
 
     def get_catalog(self) -> Catalog:
         """Get the current catalog instance (cached)."""
-        name, root = self.get_catalog_info()
+        name, root = self.get_catalog_info(silent=True)
 
         # Return cached if same catalog
         if self._cached_catalog and self._cached_name == name and self._cached_root == root:

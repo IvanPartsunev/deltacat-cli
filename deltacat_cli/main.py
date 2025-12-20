@@ -49,7 +49,7 @@ def main_callback(
         commands_without_catalog = {'catalog'}
 
         if ctx.invoked_subcommand not in commands_without_catalog:
-            catalog_context.get_catalog_info()
+            catalog_context.get_catalog_info(silent=True)
 
 
 app.add_typer(catalog_app, name='catalog', help='Catalog operations for DeltaCat')
