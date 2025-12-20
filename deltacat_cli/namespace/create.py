@@ -17,12 +17,9 @@ def create_namespace_cmd(name: Annotated[str, typer.Argument(help='Namespace nam
         catalog_name, _ = catalog_context.get_catalog_info()
         catalog_context.get_catalog()
 
-        console.print(
-            f'🔄 Creating namespace "[bold cyan]{name}[/bold cyan]" in catalog "[bold yellow]{catalog_name}[/bold yellow]"'
-        )
-
+        console.print(f'🔄 Creating namespace "[cyan]{name}[/cyan]" in catalog "[yellow]{catalog_name}[/yellow]"...')
         create_namespace(namespace=name, catalog=catalog_name)
-        console.print(f'✅ Namespace created: [bold cyan]{name}[/bold cyan]', style='green')
+        console.print(f'✅ Namespace "[bold cyan]{name}[/bold cyan]" created successfully', style='green')
 
     except Exception as e:
         err_console.print(f'❌ Error creating namespace: {e}', style='bold red')

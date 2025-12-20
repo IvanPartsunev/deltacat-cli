@@ -41,9 +41,8 @@ def initialize() -> None:
 
     catalog_name = Prompt.ask('\n[bold cyan]Enter Catalog name[/bold cyan]', console=console, default='default')
 
-    console.print(f"\n✅ Initializing catalog '[bold]{catalog_name}[/bold]' at '[bold]{root}[/bold]'", style='green')
-
     try:
+        console.print(f'🔄 Initializing catalog "[cyan]{catalog_name}[/cyan]" at "[yellow]{root}[/yellow]"...')
         initialize_catalog(catalog_name=catalog_name, root=root)
         console.print('🎉 Catalog initialized and set as current!', style='bold green')
     except Exception as e:

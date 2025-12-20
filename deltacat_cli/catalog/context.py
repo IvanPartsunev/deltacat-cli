@@ -6,7 +6,7 @@ from pathlib import Path
 import typer
 
 from deltacat import Catalog, CatalogProperties, put_catalog
-from deltacat_cli.config import console, err_console
+from deltacat_cli.config import console, err_console, CONFIG_ERROR_MODE
 
 
 class CatalogContext:
@@ -25,14 +25,14 @@ class CatalogContext:
 
         # Clear cache when setting new catalog
         self._clear_cache()
-        console.print(f'✅ Catalog set to "{name}" at "{root}"', style='green')
+        console.print(f'Catalog set to "{name}" at "{root}"', style='green')
 
     def get_catalog_info(self) -> tuple[str, str]:
         """Get current catalog name and root, or raise error if not set."""
         config = self._load_config()
 
         if not config:
-            err_console.print('❌ No catalog configured.', style='bold red')
+            err_console.print('No catalog configured.', style='bold red')
             console.print(
                 'Set catalog with: [bold cyan]deltacat catalog set[/bold cyan] or [bold cyan]deltacat catalog init[/bold cyan]'
             )
@@ -42,7 +42,7 @@ class CatalogContext:
         root = config.get('root')
 
         if not name or not root:
-            err_console.print('❌ Invalid catalog configuration.', style='bold red')
+            err_console.print('Invalid catalog configuration.', style='bold red')
             console.print(
                 'Set catalog with: [bold cyan]deltacat catalog set[/bold cyan] or [bold cyan]deltacat catalog init[/bold cyan]'
             )
@@ -63,7 +63,6 @@ class CatalogContext:
         catalog_props = CatalogProperties(root=f'{root}/{name}')
         self._cached_catalog = Catalog(config=catalog_props)
 
-        # Register with deltacat's global registry
         put_catalog(name, self._cached_catalog)
 
         self._cached_name = name
@@ -77,7 +76,7 @@ class CatalogContext:
             self._config_file.unlink()
 
         self._clear_cache()
-        console.print('✅ Catalog configuration cleared', style='yellow')
+        console.print('Catalog configuration cleared', style='yellow')
 
     def _clear_cache(self) -> None:
         """Clear the cached catalog."""
@@ -90,9 +89,14 @@ class CatalogContext:
         try:
             with open(self._config_file, 'w') as f:
                 json.dump(config, f)
-        except (OSError, json.JSONEncodeError):
-            # Silently fail if we can't save config
-            pass
+        except OSError as e:
+            if CONFIG_ERROR_MODE == 'strict':
+                err_console.print(f'Error: Could not save config to {self._config_file}: {e}', style='bold red')
+                raise typer.Exit(1) from e
+            elif CONFIG_ERROR_MODE == 'warn':
+                console.print(f'Warning: Could not save config to {self._config_file}: {e}', style='yellow')
+                console.print('   Configuration will not persist between sessions.', style='dim')
+            # 'silent' mode does nothing
 
     def _load_config(self) -> dict | None:
         """Load configuration from file."""
@@ -100,9 +104,13 @@ class CatalogContext:
             if self._config_file.exists():
                 with open(self._config_file) as f:
                     return json.load(f)
-        except (OSError, json.JSONDecodeError):
-            # Silently fail if we can't load config
-            pass
+        except (OSError, json.JSONDecodeError) as e:
+            if CONFIG_ERROR_MODE == 'strict':
+                err_console.print(f'Error: Could not load config from {self._config_file}: {e}', style='bold red')
+                raise typer.Exit(1) from e
+            elif CONFIG_ERROR_MODE == 'warn':
+                console.print(f'Warning: Could not load config from {self._config_file}: {e}', style='yellow')
+                console.print('   You may need to reconfigure your catalog.', style='dim')
         return None
 
 

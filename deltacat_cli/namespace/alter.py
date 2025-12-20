@@ -24,14 +24,9 @@ def alter_namespace_cmd(
         catalog_name, _ = catalog_context.get_catalog_info()
         catalog_context.get_catalog()
 
-        console.print(
-            f'🔄 Renaming namespace "[bold cyan]{name}[/bold cyan]" to "[bold green]{new_name}[/bold green]" in catalog "[bold yellow]{catalog_name}[/bold yellow]"'
-        )
-
+        console.print(f'🔄 Renaming namespace "[cyan]{name}[/cyan]" to "[green]{new_name}[/green]"...')
         alter_namespace(namespace=name, new_namespace=new_name, catalog=catalog_name)
-        console.print(
-            f'✅ Namespace renamed: [bold cyan]{name}[/bold cyan] → [bold green]{new_name}[/bold green]', style='green'
-        )
+        console.print(f'✅ Namespace renamed: [bold cyan]{name}[/bold cyan] → [bold green]{new_name}[/bold green]', style='green')
 
     except Exception as e:
         err_console.print(f'❌ Error altering namespace: {e}', style='bold red')
