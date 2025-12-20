@@ -8,6 +8,6 @@ app = typer.Typer()
 
 @app.command(name='show')
 def show_catalog() -> None:
-    """Show the current active catalog."""
+    """Show the current active Catalog."""
     catalog_context.get_catalog_info()
 

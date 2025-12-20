@@ -13,7 +13,7 @@ app = typer.Typer()
 
 @app.command(name='init')
 def initialize() -> None:
-    """Create and set new Deltacat Catalog"""
+    """Create and set new Catalog"""
     sections = [
         Text("🏠  Local filesystem:", style="bold green"),
         Text("  ~/.deltacat", style="dim"),

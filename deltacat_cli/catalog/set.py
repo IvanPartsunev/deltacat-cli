@@ -8,5 +8,5 @@ app = typer.Typer()
 
 @app.command(name='set')
 def set_catalog(catalog_name: str, root: str) -> None:
-    """Set the current catalog for this session."""
+    """Set the current Catalog for this session."""
     catalog_context.set_catalog(catalog_name, root)

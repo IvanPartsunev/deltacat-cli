@@ -8,5 +8,5 @@ app = typer.Typer()
 
 @app.command(name='clear')
 def clear_catalog() -> None:
-    """Clear the current catalog configuration"""
+    """Clear the current Catalog configuration"""
     catalog_context.clear_catalog()
