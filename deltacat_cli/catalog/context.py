@@ -3,10 +3,9 @@
 import json
 from pathlib import Path
 
-import deltacat
 import typer
 
-from deltacat import Catalog, CatalogProperties, get_catalog, put_catalog
+from deltacat import Catalog, CatalogProperties, put_catalog
 from deltacat_cli.config import console, err_console
 
 
@@ -63,10 +62,10 @@ class CatalogContext:
         # Always create and register the catalog since each command runs in a new process
         catalog_props = CatalogProperties(root=f'{root}/{name}')
         self._cached_catalog = Catalog(config=catalog_props)
-        
+
         # Register with deltacat's global registry
         put_catalog(name, self._cached_catalog)
-        
+
         self._cached_name = name
         self._cached_root = root
         return self._cached_catalog

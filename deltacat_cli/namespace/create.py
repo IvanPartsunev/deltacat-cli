@@ -1,8 +1,8 @@
 from typing import Annotated
 
 import typer
-from deltacat import create_namespace
 
+from deltacat import create_namespace
 from deltacat_cli.catalog.context import catalog_context
 from deltacat_cli.config import console, err_console
 
