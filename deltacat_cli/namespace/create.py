@@ -3,8 +3,9 @@ from typing import Annotated
 import typer
 
 from deltacat import create_namespace
-from deltacat_cli.config import console, err_console
+from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
+from deltacat_cli.utils.error_handlers import handle_catalog_error
 
 
 app = typer.Typer()
@@ -23,5 +24,4 @@ def create_namespace_cmd(name: Annotated[str, typer.Argument(help='Namespace nam
         console.print(f'✅ Namespace "[bold cyan]{name}[/bold cyan]" created successfully', style='green')
 
     except Exception as e:
-        err_console.print(f'❌ Error creating namespace: {e}', style='bold red')
-        raise typer.Exit(1) from e
+        handle_catalog_error(e, "creating namespace")
