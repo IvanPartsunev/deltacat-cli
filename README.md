@@ -73,7 +73,8 @@ make help                 # Show all available commands
 make install             # Install package and dependencies
 make install-completion  # Install shell autocompletion
 make show-completion     # Show completion script
-make format              # Format and fix code
+make format              # Format and fix code (linting + formatting)
+make format-only         # Format code only (no linting fixes)
 make lint                # Run linting checks
 make check               # Run all checks
 make test-cli            # Test CLI functionality

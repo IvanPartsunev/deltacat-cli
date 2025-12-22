@@ -10,4 +10,3 @@ app = typer.Typer()
 def show_catalog_cmd() -> None:
     """Show the current active Catalog."""
     catalog_context.get_catalog_info(silent=False)
-

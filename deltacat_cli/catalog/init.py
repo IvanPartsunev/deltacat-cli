@@ -15,33 +15,28 @@ app = typer.Typer()
 def initialize_cmd() -> None:
     """Create and set new Catalog"""
     sections = [
-        Text("🏠  Local filesystem:", style="bold green"),
-        Text("  ~/.deltacat", style="dim"),
+        Text('🏠  Local filesystem:', style='bold green'),
+        Text('  ~/.deltacat', style='dim'),
         Text(),
-        Text("☁️  AWS S3:", style="bold blue"),
-        Text("  s3://my-bucket/deltacat-root", style="dim"),
+        Text('☁️  AWS S3:', style='bold blue'),
+        Text('  s3://my-bucket/deltacat-root', style='dim'),
         Text(),
-        Text("🌐  Google Cloud Storage:", style="bold yellow"),
-        Text("  gs://my-bucket/deltacat-root", style="dim"),
+        Text('🌐  Google Cloud Storage:', style='bold yellow'),
+        Text('  gs://my-bucket/deltacat-root', style='dim'),
         Text(),
-        Text("🔷  Azure Blob Storage:", style="bold magenta"),
-        Text("  abfs://container@account.dfs.core.windows.net/deltacat-root", style="dim"),
+        Text('🔷  Azure Blob Storage:', style='bold magenta'),
+        Text('  abfs://container@account.dfs.core.windows.net/deltacat-root', style='dim'),
         Text(),
     ]
-
 
     # Use Group to properly stack the sections
     content = Group(*sections)
 
-    console.print(Panel(
-        content,
-        title="[bold blue]Catalog Root Path Options[/bold blue]",
-        border_style="green",
-        padding=(1, 2),
-    ))
+    console.print(
+        Panel(content, title='[bold blue]Catalog Root Path Options[/bold blue]', border_style='green', padding=(1, 2))
+    )
     root = Prompt.ask(
-        '\n[bold blue]Enter full Catalog root path[/bold blue] [dim](see examples above)[/dim]',
-        console=console,
+        '\n[bold blue]Enter full Catalog root path[/bold blue] [dim](see examples above)[/dim]', console=console
     )
 
     catalog_name = Prompt.ask('\n[bold blue]Enter Catalog name[/bold blue]', console=console)

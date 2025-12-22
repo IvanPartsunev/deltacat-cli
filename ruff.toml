@@ -50,7 +50,7 @@ select = [
     "PTH",    # flake8-use-pathlib
     "TD",     # flake8-todos
     "FIX",    # flake8-fixme
-    "ERA",    # eradicate
+    # "ERA",    # eradicate (commented code) - disabled to allow commented code
     "PD",     # pandas-vet
     "PGH",    # pygrep-hooks
     "PL",     # Pylint

@@ -33,6 +33,11 @@ format: ## Format code with ruff (includes import sorting and formatting)
 	uv run --no-project ruff format .
 	@echo "✅ Code formatting complete!"
 
+format-only: ## Format code only (no linting fixes)
+	@echo "🎨 Running ruff formatting only..."
+	uv run --no-project ruff format .
+	@echo "✅ Code formatting complete!"
+
 format-check: ## Check code formatting without making changes
 	@echo "🔍 Checking code formatting..."
 	uv run --no-project ruff format --check .
