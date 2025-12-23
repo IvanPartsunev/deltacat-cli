@@ -18,16 +18,20 @@ class CatalogContext:
         self._cached_root: str | None = None
         self._config_file = Path.home() / '.deltacat_cli_config.json'
 
-    def set_catalog(self, name: str, root: str) -> None:
-        """Set the current catalog and persist to file."""
+    def set_catalog(self, name: str, root: str) -> tuple[str, list[str]]:
+        """Set the current catalog and persist to file. Returns success message and details."""
         # Persist to file
         self._save_config({'name': name, 'root': root})
 
         # Clear cache when setting new catalog
         self._clear_cache()
-        console.print(f'Catalog [bold]set[/bold] to: [bold blue]{name}[/bold blue]', style='green')
-        console.print(f'Root: [bold bright_magenta]{root}[/bold bright_magenta]', style='dim')
-        console.print(f'Full path: [bold bright_magenta]{root}/{name}[/bold bright_magenta]', style='dim')
+
+        success_msg = f'Catalog [bold]set[/bold] to: [bold blue]{name}[/bold blue]'
+        details = [
+            f'Root: [bold bright_magenta]{root}[/bold bright_magenta]',
+            f'Full path: [bold bright_magenta]{root}/{name}[/bold bright_magenta]',
+        ]
+        return success_msg, details
 
     def get_catalog_info(self, silent: bool = True) -> tuple[str, str]:
         """Get current catalog name and root, or raise error if not set."""
@@ -77,14 +81,14 @@ class CatalogContext:
         self._cached_root = root
         return self._cached_catalog
 
-    def clear_catalog(self) -> None:
-        """Clear the current catalog configuration."""
+    def clear_catalog(self) -> str:
+        """Clear the current catalog configuration. Returns success message."""
         # Remove config file
         if self._config_file.exists():
             self._config_file.unlink()
 
         self._clear_cache()
-        console.print('Catalog configuration cleared', style='bold yellow')
+        return 'Catalog configuration cleared'
 
     def _clear_cache(self) -> None:
         """Clear the cached catalog."""

@@ -52,9 +52,7 @@ class TableContext:
         schema_ = self._set_deltacat_table_schema(schema, merge_keys or []) if schema else None
 
         table_properties = (
-            {TableProperty.READ_OPTIMIZATION_LEVEL: TableReadOptimizationLevel.NONE}
-            if not compaction
-            else None
+            {TableProperty.READ_OPTIMIZATION_LEVEL: TableReadOptimizationLevel.NONE} if not compaction else None
         )
 
         return dc_create_table(

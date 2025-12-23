@@ -5,10 +5,9 @@ from rich import print as rich_print
 
 from deltacat_cli import __version__
 from deltacat_cli.catalog import app as catalog_app
-from deltacat_cli.table import app as table_app
-from deltacat_cli.namespace import app as namespace_app
-
 from deltacat_cli.config import SHOW_TRACEBACK, err_console
+from deltacat_cli.namespace import app as namespace_app
+from deltacat_cli.table import app as table_app
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import EMOJI_SETS, get_emoji, set_emoji_style
 
@@ -93,5 +92,5 @@ def main() -> None:
     except Exception as e:
         if SHOW_TRACEBACK:
             raise
-        err_console.print(f'❌ Error: {e}', style='bold red')
+        err_console.print(f'{get_emoji("error")} Error: {e}', style='bold red')
         raise typer.Exit(1) from e
