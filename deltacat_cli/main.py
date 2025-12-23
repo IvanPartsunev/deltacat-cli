@@ -55,29 +55,31 @@ def main_callback(
 
 @app.command()
 def emoji_style(
-    style: str = typer.Argument(None, help="Emoji style: professional, geometric, minimal, colorful"),
-    show: bool = typer.Option(False, "--show", help="Show available emoji styles"),
+    style: str = typer.Argument(None, help='Emoji style: professional, geometric, minimal, colorful'),
+    show: bool = typer.Option(False, '--show', help='Show available emoji styles'),
 ) -> None:
     """Change emoji style for CLI output."""
     if show:
-        rich_print("[bold yellow]Available emoji styles:[/bold yellow]\n")
+        rich_print('[bold yellow]Available emoji styles:[/bold yellow]\n')
         for style_name, emojis in EMOJI_SETS.items():
-            rich_print(f"[bold cyan]{style_name}:[/bold cyan]")
-            rich_print(f"  {emojis['loading']} loading  {emojis['success']} success  {emojis['error']} error  {emojis['warning']} warning")
+            rich_print(f'[bold cyan]{style_name}:[/bold cyan]')
+            rich_print(
+                f'  {emojis["loading"]} loading  {emojis["success"]} success  {emojis["error"]} error  {emojis["warning"]} warning'
+            )
             rich_print()
         return
-    
+
     if not style:
-        rich_print("[red]Please specify a style or use --show to see available styles[/red]")
+        rich_print('[red]Please specify a style or use --show to see available styles[/red]')
         raise typer.Exit(1)
-    
+
     if style not in EMOJI_SETS:
-        rich_print(f"[red]Unknown style: {style}[/red]")
-        rich_print(f"Available styles: {', '.join(EMOJI_SETS.keys())}")
+        rich_print(f'[red]Unknown style: {style}[/red]')
+        rich_print(f'Available styles: {", ".join(EMOJI_SETS.keys())}')
         raise typer.Exit(1)
-    
+
     set_emoji_style(style)
-    rich_print(f"{get_emoji('success')} Emoji style changed to: [bold cyan]{style}[/bold cyan]")
+    rich_print(f'{get_emoji("success")} Emoji style changed to: [bold cyan]{style}[/bold cyan]')
 
 
 app.add_typer(catalog_app, name='catalog', help='Catalog operations for DeltaCat')

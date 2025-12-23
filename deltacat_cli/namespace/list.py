@@ -30,10 +30,10 @@ def list_namespace_cmd() -> None:
             raise typer.Exit()
 
         for namespace in all_namespaces:
-          print_json(source_type='namespace', data=namespace)
+            print_json(source_type='namespace', data=namespace)
 
         console.print(f'{get_emoji("success")} Found {len(all_namespaces)} namespace(s)', style='green')
         console.print()
 
     except Exception as e:
-        handle_catalog_error(e, "listing namespaces")
+        handle_catalog_error(e, 'listing namespaces')

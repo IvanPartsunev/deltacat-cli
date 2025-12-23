@@ -13,9 +13,7 @@ app = typer.Typer()
 
 
 @app.command(name='get')
-def get_namespace_cmd(
-    name: Annotated[str, typer.Argument(help='Namespace name to drop')],
-) -> None:
+def get_namespace_cmd(name: Annotated[str, typer.Argument(help='Namespace name to get')]) -> None:
     """Get the Namespace with the given name."""
     try:
         catalog_name, _ = catalog_context.get_catalog_info(silent=True)
@@ -30,9 +28,8 @@ def get_namespace_cmd(
         print_json(source_type='namespace', data=namespace)
 
         console.print(
-            f'{get_emoji("success")} Namespace "[bold cyan]{name}[/bold cyan]" get successfully',
-            style='green',
+            f'{get_emoji("success")} Namespace "[bold cyan]{name}[/bold cyan]" get successfully', style='green'
         )
 
     except Exception as e:
-        handle_catalog_error(e, "get namespace")
+        handle_catalog_error(e, 'get namespace')

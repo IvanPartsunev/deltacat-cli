@@ -32,4 +32,4 @@ def alter_namespace_cmd(
         )
 
     except Exception as e:
-        handle_catalog_error(e, "altering namespace")
+        handle_catalog_error(e, 'altering namespace')

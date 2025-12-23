@@ -22,13 +22,14 @@ def drop_namespace_cmd(
         try:
             catalog_name, _ = catalog_context.get_catalog_info(silent=True)
             catalog_context.get_catalog()
-            console.print(f'{get_emoji("loading")} Dropping namespace "[cyan]{name}[/cyan]". Purge: "[green]{purge}[/green]"...')
+            console.print(
+                f'{get_emoji("loading")} Dropping namespace "[cyan]{name}[/cyan]". Purge: "[green]{purge}[/green]"...'
+            )
 
             drop_namespace(namespace=name, catalog=catalog_name)
             console.print(
-                f'{get_emoji("success")} Namespace "[bold cyan]{name}[/bold cyan]" dropped successfully',
-                style='green',
+                f'{get_emoji("success")} Namespace "[bold cyan]{name}[/bold cyan]" dropped successfully', style='green'
             )
 
         except Exception as e:
-            handle_catalog_error(e, "dropping namespace")
+            handle_catalog_error(e, 'dropping namespace')
