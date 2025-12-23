@@ -8,6 +8,7 @@ from deltacat_cli.catalog import app as catalog_app
 from deltacat_cli.config import SHOW_TRACEBACK, err_console
 from deltacat_cli.namespace import app as namespace_app
 from deltacat_cli.utils.catalog_context import catalog_context
+from deltacat_cli.utils.emojis import set_emoji_style, EMOJI_SETS, get_emoji
 
 
 # from deltacat_cli.table import app as table_app
@@ -50,6 +51,33 @@ def main_callback(
 
         if ctx.invoked_subcommand not in commands_without_catalog:
             catalog_context.get_catalog_info(silent=True)
+
+
+@app.command()
+def emoji_style(
+    style: str = typer.Argument(None, help="Emoji style: professional, geometric, minimal, colorful"),
+    show: bool = typer.Option(False, "--show", help="Show available emoji styles"),
+) -> None:
+    """Change emoji style for CLI output."""
+    if show:
+        rich_print("[bold yellow]Available emoji styles:[/bold yellow]\n")
+        for style_name, emojis in EMOJI_SETS.items():
+            rich_print(f"[bold cyan]{style_name}:[/bold cyan]")
+            rich_print(f"  {emojis['loading']} loading  {emojis['success']} success  {emojis['error']} error  {emojis['warning']} warning")
+            rich_print()
+        return
+    
+    if not style:
+        rich_print("[red]Please specify a style or use --show to see available styles[/red]")
+        raise typer.Exit(1)
+    
+    if style not in EMOJI_SETS:
+        rich_print(f"[red]Unknown style: {style}[/red]")
+        rich_print(f"Available styles: {', '.join(EMOJI_SETS.keys())}")
+        raise typer.Exit(1)
+    
+    set_emoji_style(style)
+    rich_print(f"{get_emoji('success')} Emoji style changed to: [bold cyan]{style}[/bold cyan]")
 
 
 app.add_typer(catalog_app, name='catalog', help='Catalog operations for DeltaCat')
