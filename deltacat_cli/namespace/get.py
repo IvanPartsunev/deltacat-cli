@@ -7,7 +7,7 @@ from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
 from deltacat_cli.utils.error_handlers import handle_catalog_error
-from deltacat_cli.utils.print_json import print_json
+from deltacat_cli.utils.print_as_json import print_as_json
 
 
 app = typer.Typer()
@@ -26,7 +26,7 @@ def get_namespace_cmd(name: Annotated[str, typer.Argument(help='Namespace name t
             console.print(f'{get_emoji("empty")} No namespace with name {name} found in this catalog', style='yellow')
             raise typer.Exit()
 
-        print_json(source_type='namespace', data=namespace)
+        print_as_json(source_type='namespace', data=namespace)
 
         console.print(
             f'{get_emoji("success")} Namespace "[bold cyan]{name}[/bold cyan]" get successfully', style='green'

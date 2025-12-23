@@ -7,7 +7,7 @@ from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
 from deltacat_cli.utils.error_handlers import handle_catalog_error
-from deltacat_cli.utils.print_json import print_json
+from deltacat_cli.utils.print_as_json import print_as_json
 
 
 app = typer.Typer()
@@ -32,7 +32,7 @@ def get_table_cmd(
             )
             raise typer.Exit(0)
 
-        print_json(source_type='table', data=table)
+        print_as_json(source_type='table', data=table)
 
         console.print(f'{get_emoji("success")} Table "[bold cyan]{name}[/bold cyan]" get successfully', style='green')
 

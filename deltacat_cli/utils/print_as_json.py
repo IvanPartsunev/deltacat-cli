@@ -7,16 +7,16 @@ from rich.syntax import Syntax
 from deltacat_cli.config import console
 
 
-def print_json(source_type: Literal['namespace', 'table'], data: dict[Any, Any]) -> None:
+def print_as_json(source_type: Literal['namespace', 'table'], data: dict[Any, Any]) -> None:
     """Print dict as json."""
     json_str = json.dumps(data, indent=2, default=str)
-    syntax = Syntax(json_str, 'json', theme='dracula', line_numbers=False)
+    syntax = Syntax(json_str, 'json', theme='github-dark', line_numbers=False)
     panel = Panel(
         syntax,
         title=f'[bold green]{source_type.capitalize()}[/bold green]',
         border_style='blue',
         title_align='left',
-        padding=(0, 0),
+        padding=(0, 1),
     )
 
     console.print(panel)

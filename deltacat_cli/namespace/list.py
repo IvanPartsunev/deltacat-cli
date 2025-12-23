@@ -5,7 +5,7 @@ from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
 from deltacat_cli.utils.error_handlers import handle_catalog_error
-from deltacat_cli.utils.print_json import print_json
+from deltacat_cli.utils.print_as_json import print_as_json
 
 
 app = typer.Typer()
@@ -26,7 +26,7 @@ def list_namespace_cmd() -> None:
             raise typer.Exit()
 
         for namespace in all_namespaces:
-            print_json(source_type='namespace', data=namespace)
+            print_as_json(source_type='namespace', data=namespace)
 
         console.print(f'{get_emoji("success")} Found {len(all_namespaces)} namespace(s)', style='green')
         console.print()
