@@ -1,6 +1,7 @@
 """Common error handlers for CLI commands."""
 
 import typer
+
 from deltacat_cli.config import console, err_console
 from deltacat_cli.utils.emojis import get_emoji
 
@@ -18,6 +19,5 @@ def handle_catalog_error(e: Exception, operation: str) -> None:
             'Set catalog with: [bold cyan]deltacat catalog set[/bold cyan] or [bold cyan]deltacat catalog init[/bold cyan]'
         )
         raise typer.Exit(1) from e
-    else:
-        err_console.print(f'{get_emoji("error")} Error {operation}: {e}', style='bold red')
-        raise typer.Exit(1) from e
+    err_console.print(f'{get_emoji("error")} Error {operation}: {e}', style='bold red')
+    raise typer.Exit(1) from e

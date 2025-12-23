@@ -1,13 +1,14 @@
 from typing import Annotated
 
 import typer
-from deltacat import get_namespace
 
+from deltacat import get_namespace
 from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
-from deltacat_cli.utils.error_handlers import handle_catalog_error
 from deltacat_cli.utils.emojis import get_emoji
+from deltacat_cli.utils.error_handlers import handle_catalog_error
 from deltacat_cli.utils.print_json import print_json
+
 
 app = typer.Typer()
 

@@ -1,16 +1,12 @@
-import json
-
 import typer
-from deltacat import list_namespaces
-from rich.json import JSON
-from rich.panel import Panel
-from rich.syntax import Syntax
 
+from deltacat import list_namespaces
 from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
+from deltacat_cli.utils.emojis import get_emoji
 from deltacat_cli.utils.error_handlers import handle_catalog_error
 from deltacat_cli.utils.print_json import print_json
-from deltacat_cli.utils.emojis import get_emoji
+
 
 app = typer.Typer()
 

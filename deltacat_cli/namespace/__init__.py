@@ -3,8 +3,8 @@ import typer
 from deltacat_cli.namespace.alter import app as alter_app
 from deltacat_cli.namespace.create import app as creat_app
 from deltacat_cli.namespace.drop import app as drop_app
-from deltacat_cli.namespace.list import app as list_app
 from deltacat_cli.namespace.get import app as get_app
+from deltacat_cli.namespace.list import app as list_app
 
 
 app = typer.Typer()

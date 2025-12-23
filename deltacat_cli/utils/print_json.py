@@ -7,7 +7,8 @@ from rich.syntax import Syntax
 from deltacat_cli.config import console
 
 
-def print_json(source_type: Literal['namespace', 'table'], data: dict[Any, Any]):
+def print_json(source_type: Literal['namespace', 'table'], data: dict[Any, Any]) -> None:
+    """Print dict as json."""
     json_str = json.dumps(data, indent=2, default=str)
     syntax = Syntax(json_str, 'json', theme='dracula', line_numbers=False)
     panel = Panel(
