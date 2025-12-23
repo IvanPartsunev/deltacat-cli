@@ -27,7 +27,7 @@ def list_namespace_cmd() -> None:
 
         if not all_namespaces:
             console.print(f'{get_emoji("empty")} No namespaces found in this catalog', style='yellow')
-            return
+            raise typer.Exit()
 
         for namespace in all_namespaces:
           print_json(source_type='namespace', data=namespace)
