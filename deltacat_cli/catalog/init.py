@@ -53,16 +53,16 @@ def initialize_cmd(
     show_help: Annotated[
         bool, typer.Option('--show-help', help='Show catalog path options and exit', callback=show_help_callback)
     ] = False,
+    name: Annotated[str, typer.Option(help='Catalog name', prompt='Enter Catalog name')] = None,
     root: Annotated[str, typer.Option(help='Full catalog root path', prompt='Enter full Catalog root path')] = None,
-    catalog_name: Annotated[str, typer.Option(help='Catalog name', prompt='Enter Catalog name')] = None,
 ) -> None:
     """Create and set a new Catalog."""
 
     try:
         console.print(
-            f'{get_emoji("loading")} Initializing catalog "[cyan]{catalog_name}[/cyan]" at "[yellow]{root}[/yellow]"...'
+            f'{get_emoji("loading")} Initializing catalog "[cyan]{name}[/cyan]" at "[yellow]{root}[/yellow]"...'
         )
-        initialize_catalog(catalog_name=catalog_name, root=root)
+        initialize_catalog(catalog_name=name, root=root)
         console.print(f'{get_emoji("success")} Catalog initialized and set as current!', style='bold green')
     except Exception as e:
         console.print(f'{get_emoji("error")} Error initializing catalog: {e}', style='bold red')
