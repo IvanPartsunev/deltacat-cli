@@ -13,7 +13,7 @@ app = typer.Typer()
 
 
 @app.command(name='create')
-def create_namespace_cmd(name: Annotated[str, typer.Argument(help='Namespace name to create')]) -> None:
+def create_namespace_cmd(name: Annotated[str, typer.Option(help='Namespace name to create')]) -> None:
     """Create a new namespace in the current catalog."""
     try:
         catalog_name, _ = catalog_context.get_catalog_info(silent=True)

@@ -14,7 +14,7 @@ app = typer.Typer()
 
 
 @app.command(name='get')
-def get_namespace_cmd(name: Annotated[str, typer.Argument(help='Namespace name to get')]) -> None:
+def get_namespace_cmd(name: Annotated[str, typer.Option(help='Namespace name to get')]) -> None:
     """Get the Namespace with the given name."""
     try:
         catalog_name, _ = catalog_context.get_catalog_info(silent=True)

@@ -14,8 +14,8 @@ app = typer.Typer()
 
 @app.command(name='alter')
 def alter_namespace_cmd(
-    name: Annotated[str, typer.Argument(help='Current namespace name')],
-    new_name: Annotated[str, typer.Argument(help='New namespace name')],
+    name: Annotated[str, typer.Option(help='Current namespace name')],
+    new_name: Annotated[str, typer.Option(help='New namespace name')],
 ) -> None:
     """Alter (rename) a namespace in the current catalog.
 

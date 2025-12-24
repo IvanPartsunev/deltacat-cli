@@ -14,7 +14,7 @@ app = typer.Typer()
 
 @app.command(name='drop')
 def drop_namespace_cmd(
-    name: Annotated[str, typer.Argument(help='Namespace name to drop')],
+    name: Annotated[str, typer.Option(help='Namespace name to drop')],
     purge: Annotated[bool, typer.Option(help='Purge all data (not implemented yet)')] = False,
     drop: Annotated[bool, typer.Option(prompt=True, confirmation_prompt=True)] = False,
 ) -> None:
