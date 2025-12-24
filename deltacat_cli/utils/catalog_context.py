@@ -54,13 +54,18 @@ class CatalogContext:
             )
             raise typer.Exit(1)
 
-        # Only print if not silent
-        if not silent:
-            console.print(f'Current catalog: [bold blue]{name}[/bold blue]', style='green')
-            console.print(f'Root: [bold bright_magenta]{root}[/bold bright_magenta]', style='dim')
-            console.print(f'Full path: [bold bright_magenta]{root}/{name}[/bold bright_magenta]', style='dim')
-
         return name, root
+
+    def get_catalog_display_info(self) -> tuple[str, list[str]]:
+        """Get catalog info formatted for display. Returns title and details list."""
+        name, root = self.get_catalog_info(silent=True)
+
+        title = f'Current catalog: [bold blue]{name}[/bold blue]'
+        details = [
+            f'Root: [bold bright_magenta]{root}[/bold bright_magenta]',
+            f'Full path: [bold bright_magenta]{root}/{name}[/bold bright_magenta]',
+        ]
+        return title, details
 
     def get_catalog(self) -> Catalog:
         """Get the current catalog instance (cached)."""
