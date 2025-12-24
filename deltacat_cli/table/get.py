@@ -15,7 +15,7 @@ app = typer.Typer()
 
 @app.command(name='get')
 def get_table_cmd(
-    name: Annotated[str, typer.Argument(help='Table name to get')],
+    name: Annotated[str, typer.Option(help='Table name to get')],
     namespace: Annotated[str, typer.Option(help='Namespace name where table is located')],
 ) -> None:
     """Get the Table definition with the given name and given namespace."""
