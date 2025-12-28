@@ -2,7 +2,16 @@ from typing import ClassVar
 
 import pyarrow as pa
 
-from deltacat import Field, LifecycleState, Schema, TableDefinition, TableProperty, TableReadOptimizationLevel
+from deltacat import (
+    Field,
+    LifecycleState,
+    Schema,
+    TableDefinition,
+    TableProperty,
+    TableReadOptimizationLevel,
+    SchemaEvolutionMode,
+    SchemaConsistencyType,
+)
 from deltacat import create_table as dc_create_table
 from deltacat.compute.compactor_v2.constants import MAX_RECORDS_PER_COMPACTED_FILE
 
