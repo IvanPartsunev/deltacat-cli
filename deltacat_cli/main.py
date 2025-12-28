@@ -67,17 +67,17 @@ def main_callback(
 #             rich_print()
 #         return
 
-    # if not style:
-    #     rich_print('[red]Please specify a style or use --show to see available styles[/red]')
-    #     raise typer.Exit(1)
-    #
-    # if style not in EMOJI_SETS:
-    #     rich_print(f'[red]Unknown style: {style}[/red]')
-    #     rich_print(f'Available styles: {", ".join(EMOJI_SETS.keys())}')
-    #     raise typer.Exit(1)
-    #
-    # set_emoji_style(style)
-    # rich_print(f'{get_emoji("success")} Emoji style changed to: [bold cyan]{style}[/bold cyan]')
+# if not style:
+#     rich_print('[red]Please specify a style or use --show to see available styles[/red]')
+#     raise typer.Exit(1)
+#
+# if style not in EMOJI_SETS:
+#     rich_print(f'[red]Unknown style: {style}[/red]')
+#     rich_print(f'Available styles: {", ".join(EMOJI_SETS.keys())}')
+#     raise typer.Exit(1)
+#
+# set_emoji_style(style)
+# rich_print(f'{get_emoji("success")} Emoji style changed to: [bold cyan]{style}[/bold cyan]')
 
 
 app.add_typer(catalog_app, name='catalog', help='Catalog operations for DeltaCat')
