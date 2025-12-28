@@ -9,3 +9,4 @@ app = typer.Typer()
 
 app.add_typer(get_app)
 app.add_typer(create_app)
+app.add_typer(alter_app)
