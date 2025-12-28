@@ -4,6 +4,7 @@ import pyarrow as pa
 
 from deltacat import Field, LifecycleState, Schema, TableDefinition, TableProperty, TableReadOptimizationLevel
 from deltacat import create_table as dc_create_table
+from deltacat.compute.compactor_v2.constants import MAX_RECORDS_PER_COMPACTED_FILE
 
 
 class TableContext:
@@ -93,6 +94,29 @@ class TableContext:
             fields.append(arrow_field)
 
         return pa.schema(fields)
+
+    def set_table_properties(
+        self,
+        read_optimization_level: TableReadOptimizationLevel,
+        records_per_compacted_file: int,
+        appended_record_count_compaction_trigger: int,
+        appended_file_count_compaction_trigger: int,
+        appended_delta_count_compaction_trigger: int,
+        default_compaction_hash_bucket_count: int,
+        schema_evolution_mode: SchemaEvolutionMode,
+        default_schema_consistency_type: SchemaConsistencyType,
+    ):
+        TablePropertyDefaultValues = {
+            TableProperty.READ_OPTIMIZATION_LEVEL: TableReadOptimizationLevel.MAX,
+            TableProperty.RECORDS_PER_COMPACTED_FILE: MAX_RECORDS_PER_COMPACTED_FILE,
+            TableProperty.APPENDED_RECORD_COUNT_COMPACTION_TRIGGER: MAX_RECORDS_PER_COMPACTED_FILE
+            * 16,  # DEFAULT_COMPACTION_HASH_BUCKET_COUNT * 2
+            TableProperty.APPENDED_FILE_COUNT_COMPACTION_TRIGGER: 1000,
+            TableProperty.APPENDED_DELTA_COUNT_COMPACTION_TRIGGER: 100,
+            TableProperty.DEFAULT_COMPACTION_HASH_BUCKET_COUNT: 8,
+            TableProperty.SCHEMA_EVOLUTION_MODE: SchemaEvolutionMode.AUTO,
+            TableProperty.DEFAULT_SCHEMA_CONSISTENCY_TYPE: SchemaConsistencyType.NONE,
+        }
 
 
 table_context = TableContext()
