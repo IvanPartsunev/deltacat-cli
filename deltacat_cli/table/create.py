@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List
 
 import typer
 from rich.console import Group
@@ -121,9 +121,7 @@ def create_table_cmd(
         catalog_context.get_catalog()
         console.print(f'{get_emoji("loading")} Creating table "[cyan]{name}[/cyan]"')
 
-        merge_keys_list = (
-            [key.strip() for key in merge_keys.split(',') if key.strip()] if merge_keys and compaction else None
-        )
+        merge_keys_list = [key.strip() for key in merge_keys.split(',') if key.strip()] if merge_keys else None
         table_version = table_version if table_version else None
 
         schema_dict = (
@@ -135,11 +133,8 @@ def create_table_cmd(
         table_description = table_description if table_description else None
         table_version_description = table_version_description if table_version_description else None
 
-        if not compaction:
-            console.print('Compaction is disabled, merge_keys are set to `None`')
-
-        # Convert lifecycle state string to enum
-        lifecycle_state_enum = LifecycleState.ACTIVE if lifecycle_state.lower() == 'active' else LifecycleState.INACTIVE
+        # if not compaction:
+        #     console.print('Compaction is disabled, merge_keys are set to `None`')
 
         table = table_context.create_table(
             name=name,
@@ -147,7 +142,7 @@ def create_table_cmd(
             catalog_name=catalog_name,
             table_version=table_version,
             merge_keys=merge_keys_list,
-            lifecycle_state=lifecycle_state_enum,
+            lifecycle_state=lifecycle_state,
             schema=schema_dict,
             table_description=table_description,
             table_version_description=table_version_description,
