@@ -79,7 +79,7 @@ class TableContext:
             table_properties=table_properties,
         )
 
-    def _set_deltacat_table_schema(self, schema: dict[str, str], merge_keys: list[str]) -> Schema:
+    def set_deltacat_table_schema(self, schema: dict[str, str], merge_keys: list[str]) -> Schema:
         arrow_schema = self._shema_to_arrow(schema)
 
         fields = []
