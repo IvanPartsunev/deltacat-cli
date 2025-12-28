@@ -1,0 +1,40 @@
+from typing import Annotated
+
+import typer
+
+from deltacat import alter_namespace, alter_table
+from deltacat_cli.config import console
+from deltacat_cli.utils.catalog_context import catalog_context
+from deltacat_cli.utils.emojis import get_emoji
+from deltacat_cli.utils.error_handlers import handle_catalog_error
+
+
+app = typer.Typer()
+
+
+@app.command(name='alter')
+def alter_table_cmd(
+    name: Annotated[str, typer.Option(help='Current table name')],
+    namespace: Annotated[str, typer.Option(help='Table namespace name')],
+    new_name: Annotated[str, typer.Option(help='New namespace name')],
+) -> None:
+    """Alter (rename) a table in the given namespace and the current catalog.
+
+    Currently only supports renaming namespaces.
+    """
+    try:
+        catalog_name, _ = catalog_context.get_catalog_info(silent=True)
+        catalog_context.get_catalog()
+        console.print(
+            f'{get_emoji("loading")} Renaming namespace "[cyan]{name}[/cyan]" to "[green]{new_name}[/green]"...'
+        )
+
+        alter_table(table=name, namespace=namespace, catalog=catalog_name)
+
+        console.print(
+            f'{get_emoji("success")} Namespace renamed: [bold cyan]{name}[/bold cyan] → [bold green]{new_name}[/bold green]',
+            style='green',
+        )
+
+    except Exception as e:
+        handle_catalog_error(e, 'altering namespace')
