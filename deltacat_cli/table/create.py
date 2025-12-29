@@ -1,17 +1,23 @@
-from typing import Annotated, List
+from typing import Annotated
 
 import typer
 from rich.console import Group
 from rich.panel import Panel
 from rich.text import Text
 
-from deltacat import LifecycleState
+from deltacat import (
+    LifecycleState,
+    SchemaConsistencyType,
+    SchemaEvolutionMode,
+    TableReadOptimizationLevel,
+    create_table,
+)
 from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
 from deltacat_cli.utils.error_handlers import handle_catalog_error
 from deltacat_cli.utils.print_as_json import print_as_json
-from deltacat_cli.utils.table_context import table_context
+from deltacat_cli.utils.table_utils import TableProperties, TableSchema
 
 
 app = typer.Typer()
@@ -81,21 +87,23 @@ def create_table_cmd(
     show_help: Annotated[
         bool, typer.Option('--show-help', help='Show available data types and exit', callback=show_types_callback)
     ] = False,
-    name: Annotated[str, typer.Option(help='Table name to create', prompt=True)] = None,
-    namespace: Annotated[str, typer.Option(help='Namespace name where table is located', prompt=True)] = None,
+    name: Annotated[str, typer.Option(help='Name of the table to create', prompt=True)] = None,
+    namespace: Annotated[
+        str, typer.Option(help='Optional namespace for the table. Uses default namespace if not specified', prompt=True)
+    ] = None,
     table_description: Annotated[
-        str, typer.Option(help='Description for the table', prompt=True, show_default=False)
+        str, typer.Option(help='Optional description of the table', prompt=True, show_default=False)
     ] = '',
     table_version: Annotated[
-        str, typer.Option(help='Table version of the table', prompt=True, show_default=False)
+        str, typer.Option(help='Optional version identifier for the table', prompt=True, show_default=False)
     ] = '',
     table_version_description: Annotated[
-        str, typer.Option(help='Table version description', prompt=True, show_default=False)
+        str, typer.Option(help='Optional description for the table version', prompt=True, show_default=False)
     ] = '',
     schema: Annotated[
         str,
         typer.Option(
-            help='Schema as key:type pairs (e.g., "id:int64,name:string")',
+            help='Schema definition for the table as key:type pairs (e.g., "id:int64,name:string")',
             prompt='Schema (key:type)',
             show_default=False,
         ),
@@ -103,50 +111,86 @@ def create_table_cmd(
     merge_keys: Annotated[
         str,
         typer.Option(
-            help='Column names to be used as merge keys (comma-separated)',
+            help='Optional sort keys for the table (comma-separated)',
             prompt='Merge keys (comma-separated)',
             show_default=False,
         ),
     ] = '',
     lifecycle_state: Annotated[
-        LifecycleState, typer.Option(help='Description for the table', prompt=True, case_sensitive=False)
+        LifecycleState,
+        typer.Option(help='Lifecycle state of the new table. Defaults to ACTIVE', prompt=True, case_sensitive=False),
     ] = LifecycleState.ACTIVE,
-    compaction: Annotated[
-        bool, typer.Option(help="If False table won't trigger automatic compaction", prompt=True)
+    fail_if_exists: Annotated[
+        bool,
+        typer.Option(
+            help='If True, raises an error if table already exists. If False, returns existing table', prompt=True
+        ),
     ] = True,
+    auto_create_namespace: Annotated[
+        bool, typer.Option(help="If True, creates the namespace if it doesn't exist. Defaults to False", prompt=True)
+    ] = True,
+    read_optimization_level: Annotated[
+        TableReadOptimizationLevel,
+        typer.Option(
+            help="Read optimization level for the table. If set to `none` table won't trigger automatic compaction",
+            prompt=True,
+            case_sensitive=False,
+        ),
+    ] = TableReadOptimizationLevel.MAX,
+    default_compaction_hash_bucket_count: Annotated[
+        int, typer.Option(help='Default hash bucket count for compaction', prompt=True)
+    ] = 8,
+    records_per_compacted_file: Annotated[
+        int, typer.Option(help='Maximum number of records per compacted file', prompt=True)
+    ] = 4_000_000,
+    appended_file_count_compaction_trigger: Annotated[
+        int, typer.Option(help='Number of appended files that will trigger automatic compaction', prompt=True)
+    ] = 1000,
+    appended_delta_count_compaction_trigger: Annotated[
+        int, typer.Option(help='Number of deltas that will trigger automatic compaction', prompt=True)
+    ] = 100,
+    schema_evolution_mode: Annotated[
+        SchemaEvolutionMode, typer.Option(help='Schema evolution mode for the table', prompt=True, case_sensitive=False)
+    ] = SchemaEvolutionMode.AUTO,
+    default_schema_consistency_type: Annotated[
+        SchemaConsistencyType,
+        typer.Option(help='Default schema consistency type for the table', prompt=True, case_sensitive=False),
+    ] = SchemaConsistencyType.NONE,
 ) -> None:
-    """Create an empty Table with the given name, namespace."""
+    """Create an empty Table with the given name, namespace, and properties"""
     try:
         catalog_name, _ = catalog_context.get_catalog_info(silent=True)
         catalog_context.get_catalog()
         console.print(f'{get_emoji("loading")} Creating table "[cyan]{name}[/cyan]"')
 
-        merge_keys_list = [key.strip() for key in merge_keys.split(',') if key.strip()] if merge_keys else None
         table_version = table_version if table_version else None
-
-        schema_dict = (
-            {pair.split(':', 1)[0].strip(): pair.split(':', 1)[1].strip() for pair in schema.split(',') if ':' in pair}
-            if schema
-            else None
-        )
 
         table_description = table_description if table_description else None
         table_version_description = table_version_description if table_version_description else None
 
-        # if not compaction:
-        #     console.print('Compaction is disabled, merge_keys are set to `None`')
+        schema = TableSchema.of(schema, merge_keys)
+        table_properties = TableProperties.of(
+            read_optimization_level,
+            default_compaction_hash_bucket_count,
+            records_per_compacted_file,
+            appended_file_count_compaction_trigger,
+            appended_delta_count_compaction_trigger,
+            schema_evolution_mode,
+            default_schema_consistency_type,
+        )
 
-        table = table_context.create_table(
-            name=name,
+        table = create_table(
+            table=name,
             namespace=namespace,
-            catalog_name=catalog_name,
+            catalog=catalog_name,
             table_version=table_version,
-            merge_keys=merge_keys_list,
-            lifecycle_state=lifecycle_state,
-            schema=schema_dict,
+            schema=schema.deltacat_table_schema,
             table_description=table_description,
             table_version_description=table_version_description,
-            compaction=compaction,
+            lifecycle_state=lifecycle_state,
+            fail_if_exists=fail_if_exists,
+            auto_create_namespace=auto_create_namespace,
+            table_properties=table_properties,
         )
         print_as_json(source_type='table', data=table)
 
