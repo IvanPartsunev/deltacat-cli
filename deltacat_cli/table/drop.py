@@ -2,7 +2,7 @@ from typing import Annotated
 
 import typer
 
-from deltacat import drop_namespace, drop_table
+from deltacat import drop_table
 from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji

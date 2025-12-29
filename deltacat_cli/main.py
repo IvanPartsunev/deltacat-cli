@@ -9,7 +9,7 @@ from deltacat_cli.config import SHOW_TRACEBACK, err_console
 from deltacat_cli.namespace import app as namespace_app
 from deltacat_cli.table import app as table_app
 from deltacat_cli.utils.catalog_context import catalog_context
-from deltacat_cli.utils.emojis import EMOJI_SETS, get_emoji, set_emoji_style
+from deltacat_cli.utils.emojis import get_emoji
 
 
 def version_callback(value: bool) -> None:
