@@ -17,7 +17,7 @@ from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
 from deltacat_cli.utils.error_handlers import handle_catalog_error
 from deltacat_cli.utils.print_as_json import print_as_json
-from deltacat_cli.utils.table_utils import TableProperties, TableSchema
+from deltacat_cli.utils.table_utils import DeltacatTableSchema, TableProperties, TableSchema
 
 
 app = typer.Typer()
@@ -168,7 +168,9 @@ def create_table_cmd(
         table_description = table_description if table_description else None
         table_version_description = table_version_description if table_version_description else None
 
-        schema = TableSchema.of(schema, merge_keys)
+        table_schema = TableSchema.of(schema)
+        dc_schema = DeltacatTableSchema.build(table_schema, merge_keys)
+
         table_properties = TableProperties.of(
             read_optimization_level,
             default_compaction_hash_bucket_count,
@@ -184,7 +186,7 @@ def create_table_cmd(
             namespace=namespace,
             catalog=catalog_name,
             table_version=table_version,
-            schema=schema.deltacat_table_schema,
+            schema=dc_schema,
             table_description=table_description,
             table_version_description=table_version_description,
             lifecycle_state=lifecycle_state,
