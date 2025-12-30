@@ -1,3 +1,5 @@
+from typing import Any
+
 import pyarrow as pa
 from deltacat.types.tables import TableProperty, TablePropertyDefaultValues
 
@@ -27,6 +29,10 @@ TYPE_MAPPING: dict[str, pa.DataType] = {
 
 
 class TableProperties(dict):
+    def __init__(self):
+        super().__init__()
+        self._initial_table_properties = None
+
     @staticmethod
     def of(
         read_optimization_level: TableReadOptimizationLevel,
@@ -36,8 +42,10 @@ class TableProperties(dict):
         appended_delta_count_compaction_trigger: int,
         schema_evolution_mode: SchemaEvolutionMode,
         default_schema_consistency_type: SchemaConsistencyType,
+        initial_table_properties: dict[str, Any] | None = None
     ) -> 'TableProperties':
         table_properties = TableProperties()
+        table_properties._initial_table_properties = initial_table_properties
         table_properties.read_optimization_level = read_optimization_level
         table_properties.default_compaction_hash_bucket_count = default_compaction_hash_bucket_count
         table_properties.records_per_compacted_file = records_per_compacted_file
@@ -52,12 +60,20 @@ class TableProperties(dict):
         return table_properties
 
     @property
+    def initial_table_properties(self) -> dict[str, Any]:
+        return self._initial_table_properties
+
+    @initial_table_properties.setter
+    def initial_table_properties(self, value: dict[str, Any]) -> None:
+        self._initial_table_properties = value if value else DEFAULT_TABLE_PROPERTIES
+
+    @property
     def read_optimization_level(self) -> TableReadOptimizationLevel | None:
         return self.get('read_optimization_level')
 
     @read_optimization_level.setter
     def read_optimization_level(self, value: TableReadOptimizationLevel) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.READ_OPTIMIZATION_LEVEL):
+        if value != self.initial_table_properties.get(TableProperty.READ_OPTIMIZATION_LEVEL):
             self['read_optimization_level'] = value
 
     @property
@@ -66,7 +82,7 @@ class TableProperties(dict):
 
     @default_compaction_hash_bucket_count.setter
     def default_compaction_hash_bucket_count(self, value: str) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.DEFAULT_COMPACTION_HASH_BUCKET_COUNT):
+        if value != self.initial_table_properties.get(TableProperty.DEFAULT_COMPACTION_HASH_BUCKET_COUNT):
             self['default_compaction_hash_bucket_count'] = value
 
     @property
@@ -75,7 +91,7 @@ class TableProperties(dict):
 
     @records_per_compacted_file.setter
     def records_per_compacted_file(self, value: int) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.RECORDS_PER_COMPACTED_FILE):
+        if value != self.initial_table_properties.get(TableProperty.RECORDS_PER_COMPACTED_FILE):
             self['records_per_compacted_file'] = value
 
     @property
@@ -84,7 +100,7 @@ class TableProperties(dict):
 
     @appended_record_count_compaction_trigger.setter
     def appended_record_count_compaction_trigger(self, value: int) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.APPENDED_RECORD_COUNT_COMPACTION_TRIGGER):
+        if value != self.initial_table_properties.get(TableProperty.APPENDED_RECORD_COUNT_COMPACTION_TRIGGER):
             self['appended_record_count_compaction_trigger'] = value
 
     @property
@@ -93,7 +109,7 @@ class TableProperties(dict):
 
     @appended_file_count_compaction_trigger.setter
     def appended_file_count_compaction_trigger(self, value: int) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.APPENDED_FILE_COUNT_COMPACTION_TRIGGER):
+        if value != self.initial_table_properties.get(TableProperty.APPENDED_FILE_COUNT_COMPACTION_TRIGGER):
             self['appended_file_count_compaction_trigger'] = value
 
     @property
@@ -102,7 +118,7 @@ class TableProperties(dict):
 
     @appended_delta_count_compaction_trigger.setter
     def appended_delta_count_compaction_trigger(self, value: int) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.APPENDED_DELTA_COUNT_COMPACTION_TRIGGER):
+        if value != self.initial_table_properties.get(TableProperty.APPENDED_DELTA_COUNT_COMPACTION_TRIGGER):
             self['appended_delta_count_compaction_trigger'] = value
 
     @property
@@ -111,7 +127,7 @@ class TableProperties(dict):
 
     @schema_evolution_mode.setter
     def schema_evolution_mode(self, value: SchemaEvolutionMode) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.SCHEMA_EVOLUTION_MODE):
+        if value != self.initial_table_properties.get(TableProperty.SCHEMA_EVOLUTION_MODE):
             self['schema_evolution_mode'] = value
 
     @property
@@ -120,7 +136,7 @@ class TableProperties(dict):
 
     @default_schema_consistency_type.setter
     def default_schema_consistency_type(self, value: SchemaConsistencyType) -> None:
-        if value != DEFAULT_TABLE_PROPERTIES.get(TableProperty.DEFAULT_SCHEMA_CONSISTENCY_TYPE):
+        if value != self.initial_table_properties.get(TableProperty.DEFAULT_SCHEMA_CONSISTENCY_TYPE):
             self['default_schema_consistency_type'] = value
 
 
