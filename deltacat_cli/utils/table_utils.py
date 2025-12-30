@@ -136,8 +136,8 @@ class TableSchema(dict):
 
 class DeltacatTableSchema:
     @staticmethod
-    def build(schema: TableSchema, merge_keys: str) -> 'DeltacatSchema':
-        """Convert TableSchema to DeltaCAT compatible table schema applying merge keys if provided"""
+    def of(schema: TableSchema, merge_keys: str) -> 'DeltacatSchema':
+        """Build Deltacat Schema."""
 
         arrow_fields = []
         for field_name, field_type in schema.items():

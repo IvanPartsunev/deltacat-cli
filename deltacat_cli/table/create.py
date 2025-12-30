@@ -169,7 +169,7 @@ def create_table_cmd(
         table_version_description = table_version_description if table_version_description else None
 
         table_schema = TableSchema.of(schema)
-        dc_schema = DeltacatTableSchema.build(table_schema, merge_keys)
+        dc_schema = DeltacatTableSchema.of(table_schema, merge_keys)
 
         table_properties = TableProperties.of(
             read_optimization_level,
