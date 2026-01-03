@@ -128,7 +128,11 @@ class TableSchema(dict):
     def of(schema: str | None) -> 'TableSchema':
         if schema:
             return TableSchema(
-                {pair.split(':', 1)[0].strip(): pair.split(':', 1)[1].strip() for pair in schema.split(',') if ':' in pair}
+                {
+                    pair.split(':', 1)[0].strip(): pair.split(':', 1)[1].strip()
+                    for pair in schema.split(',')
+                    if ':' in pair
+                }
             )
         return TableSchema()
 
@@ -144,7 +148,7 @@ class DeltacatTableSchema:
         return DeltacatSchema.of(dc_fields)
 
     @staticmethod
-    def update(schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str):
+    def update(schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str) -> None:
         """
         Only add and remove field operations are available via the DeltaCAT CLI
         """

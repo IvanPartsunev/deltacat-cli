@@ -1,10 +1,9 @@
 from typing import Annotated
 
 import typer
-
-from deltacat import LifecycleState, SchemaConsistencyType, SchemaEvolutionMode, TableReadOptimizationLevel, alter_table
 from deltacat.catalog.main.impl import get_table
 
+from deltacat import LifecycleState, SchemaConsistencyType, SchemaEvolutionMode, TableReadOptimizationLevel, alter_table
 from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
@@ -20,8 +19,7 @@ def alter_table_cmd(
     name: Annotated[str, typer.Option(help='Name of the table to alter')],
     namespace: Annotated[str, typer.Option(help='Namespace of the table. Uses default namespace if not specified')],
     table_version: Annotated[
-        str | None,
-        typer.Option(help='Specific version of the table to alter. Defaults to the latest active version'),
+        str | None, typer.Option(help='Specific version of the table to alter. Defaults to the latest active version')
     ] = None,
     lifecycle_state: Annotated[
         LifecycleState | None, typer.Option(help='New lifecycle state for the table', case_sensitive=False)
@@ -31,8 +29,7 @@ def alter_table_cmd(
         typer.Option(help='Schema updates to apply as key:type pairs (e.g., "new_col:string,updated_col:int64")'),
     ] = None,
     remove_columns: Annotated[
-        str | None,
-        typer.Option(help='Column names to be removed from table (comma-separated column names)'),
+        str | None, typer.Option(help='Column names to be removed from table (comma-separated column names)')
     ] = None,
     merge_keys: Annotated[
         str | None, typer.Option(help='New merge keys for the table (comma-separated column names)')
@@ -113,22 +110,13 @@ def alter_table_cmd(
         dc_schema = None
         if schema_updates or remove_columns:
             # Get the original schema
-            table = get_table(
-                table=name,
-                namespace=namespace,
-                table_version=table_version
-            )
+            table = get_table(table=name, namespace=namespace, table_version=table_version)
 
             original_schema = table.table_version.schema
             schema_updates = TableSchema.of(schema_updates)
 
             # Apply updates
-            dc_schema = DeltacatTableSchema.update(
-                original_schema,
-                schema_updates,
-                remove_columns,
-                merge_keys
-            )
+            dc_schema = DeltacatTableSchema.update(original_schema, schema_updates, remove_columns, merge_keys)
 
         # Prepare table properties if any property is specified
         table_properties = None

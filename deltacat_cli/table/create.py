@@ -135,14 +135,14 @@ def create_table_cmd(
         int | None, typer.Option(help='Maximum number of records per compacted file. Defaults to 4_000_000')
     ] = None,
     appended_file_count_compaction_trigger: Annotated[
-        int | None, typer.Option(help='Number of appended files that will trigger automatic compaction. Defaults to 1000')
+        int | None,
+        typer.Option(help='Number of appended files that will trigger automatic compaction. Defaults to 1000'),
     ] = None,
     appended_delta_count_compaction_trigger: Annotated[
         int | None, typer.Option(help='Number of deltas that will trigger automatic compaction. Defaults to 100')
     ] = None,
     schema_evolution_mode: Annotated[
-        SchemaEvolutionMode | None,
-        typer.Option(help='Schema evolution mode. Defaults to (auto)', case_sensitive=False),
+        SchemaEvolutionMode | None, typer.Option(help='Schema evolution mode. Defaults to (auto)', case_sensitive=False)
     ] = None,
     default_schema_consistency_type: Annotated[
         SchemaConsistencyType | None,
@@ -209,15 +209,15 @@ def create_table_cmd(
         table_properties = None
 
         if any(
-          [
-              read_optimization_level is not None,
-              default_compaction_hash_bucket_count is not None,
-              records_per_compacted_file is not None,
-              appended_file_count_compaction_trigger is not None,
-              appended_delta_count_compaction_trigger is not None,
-              schema_evolution_mode is not None,
-              default_schema_consistency_type is not None,
-          ]
+            [
+                read_optimization_level is not None,
+                default_compaction_hash_bucket_count is not None,
+                records_per_compacted_file is not None,
+                appended_file_count_compaction_trigger is not None,
+                appended_delta_count_compaction_trigger is not None,
+                schema_evolution_mode is not None,
+                default_schema_consistency_type is not None,
+            ]
         ):
             table_properties = TableProperties.of(
                 read_optimization_level,
