@@ -3,11 +3,13 @@ from typing import Annotated
 import typer
 from deltacat.catalog.main.impl import get_table
 
+import deltacat
 from deltacat import LifecycleState, SchemaConsistencyType, SchemaEvolutionMode, TableReadOptimizationLevel, alter_table
 from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
 from deltacat_cli.utils.error_handlers import handle_catalog_error
+from deltacat_cli.utils.print_as_json import print_as_json
 from deltacat_cli.utils.table_utils import DeltacatTableSchema, TableProperties, TableSchema
 
 
@@ -107,11 +109,11 @@ def alter_table_cmd(
         catalog_context.get_catalog()
         console.print(f'{get_emoji("loading")} Altering table "[cyan]{name}[/cyan]"...')
 
+        table = get_table(table=name, namespace=namespace, table_version=table_version)
+
         dc_schema = None
         if schema_updates or remove_columns:
             # Get the original schema
-            table = get_table(table=name, namespace=namespace, table_version=table_version)
-
             original_schema = table.table_version.schema
             schema_updates = TableSchema.of(schema_updates)
 
@@ -156,6 +158,8 @@ def alter_table_cmd(
         console.print(
             f'{get_emoji("success")} Table "[bold cyan]{name}[/bold cyan]" altered successfully.', style='green'
         )
+        deltacat.refresh_table(table.table_version.name)
+        print_as_json(source_type='table', data=table)
 
     except Exception as e:
         handle_catalog_error(e, 'altering table')
