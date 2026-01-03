@@ -84,13 +84,8 @@ def show_types_callback(ctx: typer.Context, value: bool) -> bool:
 
 @app.command(name='create')
 def create_table_cmd(
-    show_help: Annotated[
-        bool, typer.Option('--show-help', help='Show available data types and exit', callback=show_types_callback)
-    ] = False,
-    name: Annotated[str, typer.Option(help='Name of the table to create', prompt=True)] = None,
-    namespace: Annotated[
-        str, typer.Option(help='Optional namespace for the table. Uses default namespace if not specified', prompt=True)
-    ] = None,
+    name: Annotated[str, typer.Option(help='Name of the table to create', prompt=True)],
+    namespace: Annotated[str, typer.Option(help='Optional namespace for the table. Uses default namespace if not specified', prompt=True)],
     table_description: Annotated[
         str, typer.Option(help='Optional description of the table', prompt=True, show_default=False)
     ] = '',
@@ -156,6 +151,9 @@ def create_table_cmd(
         SchemaConsistencyType,
         typer.Option(help='Default schema consistency type for the table', prompt=True, case_sensitive=False),
     ] = SchemaConsistencyType.NONE,
+    show_help: Annotated[
+        bool, typer.Option('--show-help', help='Show available data types and exit', callback=show_types_callback)
+    ] = False,
 ) -> None:
     """Create an empty Table with the given name, namespace, and properties"""
     try:
