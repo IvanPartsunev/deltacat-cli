@@ -148,7 +148,7 @@ class DeltacatTableSchema:
         return DeltacatSchema.of(dc_fields)
 
     @staticmethod
-    def update(schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str) -> None:
+    def update(schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str) -> DeltacatSchema:
         """
         Only add and remove field operations are available via the DeltaCAT CLI
         """
@@ -156,13 +156,18 @@ class DeltacatTableSchema:
         fields_updates = DeltacatTableSchema._get_dc_fields(arrow_schema_update, merge_keys)
         remove_columns = [col.strip() for col in remove_columns.split(',') if col.strip()] if remove_columns else None
 
+        schema_updater = schema.update()
+        
         if fields_updates:
             for field in fields_updates:
-                schema.update().add_field(field)
+                schema_updater.add_field(field)
 
         if remove_columns:
+            schema_updater = schema.update(True)  # Allow incompatible changes for removal
             for col in remove_columns:
-                schema.update(True).remove_field(col)
+                schema_updater.remove_field(col)
+
+        return schema_updater.build() if hasattr(schema_updater, 'build') else schema
 
     @staticmethod
     def _get_arrow_schema(schema: TableSchema) -> pa.Schema:
@@ -178,12 +183,12 @@ class DeltacatTableSchema:
 
     @staticmethod
     def _get_dc_fields(arrow_schema: pa.Schema, merge_keys: str | None) -> list[Field]:
-        merge_keys = [key.strip() for key in merge_keys.split(',') if key.strip()] if merge_keys else None
+        merge_keys_list = [key.strip() for key in merge_keys.split(',') if key.strip()] if merge_keys else []
 
         dc_fields = []
         for field in arrow_schema:
             field: pa.Field
-            if field.name in merge_keys:
+            if field.name in merge_keys_list:
                 dc_fields.append(Field.of(field, is_merge_key=True))
             else:
                 dc_fields.append(Field.of(field))
