@@ -135,9 +135,33 @@ class TableSchema(dict):
 
 class DeltacatTableSchema:
     @staticmethod
-    def of(schema: TableSchema, merge_keys: str) -> 'DeltacatSchema':
+    def of(schema: TableSchema, merge_keys: str | None) -> 'DeltacatSchema':
         """Build Deltacat Schema."""
 
+        arrow_schema = DeltacatTableSchema._get_arrow_schema(schema)
+        dc_fields = DeltacatTableSchema._get_dc_fields(arrow_schema, merge_keys)
+
+        return DeltacatSchema.of(dc_fields)
+
+    @staticmethod
+    def update(schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str):
+        """
+        Only add and remove field operations are available via the DeltaCAT CLI
+        """
+        arrow_schema_update = DeltacatTableSchema._get_arrow_schema(schema_update)
+        fields_updates = DeltacatTableSchema._get_dc_fields(arrow_schema_update, merge_keys)
+        remove_columns = [col.strip() for col in remove_columns.split(',') if col.strip()] if remove_columns else None
+
+        if fields_updates:
+            for field in fields_updates:
+                schema.update().add_field(field)
+
+        if remove_columns:
+            for col in remove_columns:
+                schema.update(True).remove_field(col)
+
+    @staticmethod
+    def _get_arrow_schema(schema: TableSchema) -> pa.Schema:
         arrow_fields = []
         for field_name, field_type in schema.items():
             arrow_type = TYPE_MAPPING.get(field_type)
@@ -146,8 +170,10 @@ class DeltacatTableSchema:
             arrow_field = pa.field(name=field_name, type=arrow_type)
             arrow_fields.append(arrow_field)
 
-        arrow_schema = pa.schema(arrow_fields)
+        return pa.schema(arrow_fields)
 
+    @staticmethod
+    def _get_dc_fields(arrow_schema: pa.Schema, merge_keys: str | None) -> list[Field]:
         merge_keys = [key.strip() for key in merge_keys.split(',') if key.strip()] if merge_keys else None
 
         dc_fields = []
@@ -158,4 +184,4 @@ class DeltacatTableSchema:
             else:
                 dc_fields.append(Field.of(field))
 
-        return DeltacatSchema.of(dc_fields)
+        return dc_fields
