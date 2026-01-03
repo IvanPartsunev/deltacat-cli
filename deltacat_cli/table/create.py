@@ -111,47 +111,47 @@ def create_table_cmd(
             show_default=False,
         ),
     ] = None,
-    lifecycle_state: Annotated[
-        LifecycleState | None,
-        typer.Option(help='Lifecycle state of the new table (ACTIVE, INACTIVE, DEPRECATED)', case_sensitive=False),
-    ] = None,
     fail_if_exists: Annotated[
         bool, typer.Option(help='If True, raises an error if table already exists. If False, returns existing table')
     ] = True,
     auto_create_namespace: Annotated[
         bool, typer.Option(help="If True, creates the namespace if it doesn't exist")
     ] = True,
+    lifecycle_state: Annotated[
+        LifecycleState | None,
+        typer.Option(help='Lifecycle state of the new table. Defaults to (active).', case_sensitive=False),
+    ] = None,
     read_optimization_level: Annotated[
         TableReadOptimizationLevel | None,
         typer.Option(
-            help="Read optimization level (NONE, MIN, MAX). If set to NONE, table won't trigger automatic compaction",
+            help="Read optimization level. Defaults to (max). If set to (none), table won't trigger automatic compaction. (moderate) is not implemented.",
             case_sensitive=False,
         ),
     ] = None,
     default_compaction_hash_bucket_count: Annotated[
-        int | None, typer.Option(help='Default hash bucket count for compaction operations')
+        int | None, typer.Option(help='Default hash bucket count for compaction operations. Defaults to 8')
     ] = None,
     records_per_compacted_file: Annotated[
-        int | None, typer.Option(help='Maximum number of records per compacted file')
+        int | None, typer.Option(help='Maximum number of records per compacted file. Defaults to 4_000_000')
     ] = None,
     appended_file_count_compaction_trigger: Annotated[
-        int | None, typer.Option(help='Number of appended files that will trigger automatic compaction')
+        int | None, typer.Option(help='Number of appended files that will trigger automatic compaction. Defaults to 1000')
     ] = None,
     appended_delta_count_compaction_trigger: Annotated[
-        int | None, typer.Option(help='Number of deltas that will trigger automatic compaction')
+        int | None, typer.Option(help='Number of deltas that will trigger automatic compaction. Defaults to 100')
     ] = None,
     schema_evolution_mode: Annotated[
         SchemaEvolutionMode | None,
-        typer.Option(help='Schema evolution mode (AUTO, STRICT, PERMISSIVE)', case_sensitive=False),
+        typer.Option(help='Schema evolution mode. Defaults to (auto)', case_sensitive=False),
     ] = None,
     default_schema_consistency_type: Annotated[
         SchemaConsistencyType | None,
-        typer.Option(help='Default schema consistency type (NONE, STRICT, EVENTUAL)', case_sensitive=False),
+        typer.Option(help='Default schema consistency type. Defaults to (none)', case_sensitive=False),
     ] = None,
-    show_help: Annotated[
+    show_type: Annotated[
         bool,
         typer.Option(
-            '--show-help',
+            '--show-types-help',
             help='Show detailed help with available data types, examples, and best practices',
             callback=show_types_callback,
         ),
@@ -202,28 +202,32 @@ def create_table_cmd(
         catalog_context.get_catalog()
         console.print(f'{get_emoji("loading")} Creating table "[cyan]{name}[/cyan]"')
 
-        # Use defaults for None values
-        lifecycle_state = lifecycle_state or LifecycleState.ACTIVE
-        read_optimization_level = read_optimization_level or TableReadOptimizationLevel.MAX
-        default_compaction_hash_bucket_count = default_compaction_hash_bucket_count or 8
-        records_per_compacted_file = records_per_compacted_file or 4_000_000
-        appended_file_count_compaction_trigger = appended_file_count_compaction_trigger or 1000
-        appended_delta_count_compaction_trigger = appended_delta_count_compaction_trigger or 100
-        schema_evolution_mode = schema_evolution_mode or SchemaEvolutionMode.AUTO
-        default_schema_consistency_type = default_schema_consistency_type or SchemaConsistencyType.NONE
-
-        table_schema = TableSchema.of(schema) if schema else None
+        table_schema = TableSchema.of(schema)
         dc_schema = DeltacatTableSchema.of(table_schema, merge_keys) if table_schema else None
 
-        table_properties = TableProperties.of(
-            read_optimization_level,
-            default_compaction_hash_bucket_count,
-            records_per_compacted_file,
-            appended_file_count_compaction_trigger,
-            appended_delta_count_compaction_trigger,
-            schema_evolution_mode,
-            default_schema_consistency_type,
-        )
+        # Prepare table properties if any property is specified
+        table_properties = None
+
+        if any(
+          [
+              read_optimization_level is not None,
+              default_compaction_hash_bucket_count is not None,
+              records_per_compacted_file is not None,
+              appended_file_count_compaction_trigger is not None,
+              appended_delta_count_compaction_trigger is not None,
+              schema_evolution_mode is not None,
+              default_schema_consistency_type is not None,
+          ]
+        ):
+            table_properties = TableProperties.of(
+                read_optimization_level,
+                default_compaction_hash_bucket_count,
+                records_per_compacted_file,
+                appended_file_count_compaction_trigger,
+                appended_delta_count_compaction_trigger,
+                schema_evolution_mode,
+                default_schema_consistency_type,
+            )
 
         table = create_table(
             table=name,
@@ -245,4 +249,5 @@ def create_table_cmd(
         )
 
     except Exception as e:
+        raise e
         handle_catalog_error(e, 'creating table')

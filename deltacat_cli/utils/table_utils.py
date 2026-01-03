@@ -1,4 +1,3 @@
-
 import pyarrow as pa
 
 from deltacat import Field, SchemaConsistencyType, SchemaEvolutionMode, TableReadOptimizationLevel
@@ -40,9 +39,11 @@ class TableProperties(dict):
         table_properties.default_compaction_hash_bucket_count = default_compaction_hash_bucket_count
         table_properties.records_per_compacted_file = records_per_compacted_file
         # Set the appended_record_count_compaction_trigger as in TablePropertyDefaultValues in deltacat
-        table_properties.appended_record_count_compaction_trigger = (
-            records_per_compacted_file * default_compaction_hash_bucket_count * 2
-        )
+        # Only calculate if both values are not None
+        if records_per_compacted_file is not None and default_compaction_hash_bucket_count is not None:
+            table_properties.appended_record_count_compaction_trigger = (
+                records_per_compacted_file * default_compaction_hash_bucket_count * 2
+            )
         table_properties.appended_file_count_compaction_trigger = appended_file_count_compaction_trigger
         table_properties.appended_delta_count_compaction_trigger = appended_delta_count_compaction_trigger
         table_properties.schema_evolution_mode = schema_evolution_mode
@@ -125,11 +126,11 @@ class TableProperties(dict):
 class TableSchema(dict):
     @staticmethod
     def of(schema: str | None) -> 'TableSchema':
-        return TableSchema(
-            {pair.split(':', 1)[0].strip(): pair.split(':', 1)[1].strip() for pair in schema.split(',') if ':' in pair}
-            if schema
-            else None
-        )
+        if schema:
+            return TableSchema(
+                {pair.split(':', 1)[0].strip(): pair.split(':', 1)[1].strip() for pair in schema.split(',') if ':' in pair}
+            )
+        return TableSchema()
 
 
 class DeltacatTableSchema:
