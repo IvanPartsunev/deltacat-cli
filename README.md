@@ -298,6 +298,24 @@ cd deltacat-cli
 make install
 ```
 
+### Code Quality
+
+This project uses pre-commit hooks to maintain code quality. When you make changes:
+
+```bash
+# Fix formatting and linting issues automatically
+uv run pre-commit run --all-files
+
+# Or run individual tools
+uv run ruff check . --fix    # Fix linting issues
+uv run ruff format .         # Fix formatting issues
+```
+
+**If CI fails due to formatting issues:**
+1. Run `uv run pre-commit run --all-files` locally
+2. Commit and push the fixes
+3. CI will pass on the next run
+
 ### Available Commands
 
 ```bash
