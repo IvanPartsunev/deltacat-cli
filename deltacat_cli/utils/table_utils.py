@@ -192,30 +192,6 @@ class DeltacatTableSchema:
         return None
 
     @staticmethod
-    def update(
-        schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str
-    ) -> DeltacatSchema:
-        """
-        Only add and remove field operations are available via the DeltaCAT CLI
-        """
-        arrow_schema_update = DeltacatTableSchema._get_arrow_schema(schema_update)
-        fields_updates = DeltacatTableSchema._get_dc_fields(arrow_schema_update, merge_keys)
-        remove_columns = [col.strip() for col in remove_columns.split(',') if col.strip()] if remove_columns else None
-
-        schema_updater = schema.update()
-
-        if fields_updates:
-            for field in fields_updates:
-                schema_updater.add_field(field)
-
-        if remove_columns:
-            schema_updater = schema.update(True)  # Allow incompatible changes for removal
-            for col in remove_columns:
-                schema_updater.remove_field(col)
-
-        return schema_updater.build() if hasattr(schema_updater, 'build') else schema
-
-    @staticmethod
     def _get_arrow_schema(schema: TableSchema) -> pa.Schema:
         arrow_fields = []
         for field_name, field_type in schema.items():
