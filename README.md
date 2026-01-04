@@ -303,18 +303,26 @@ make install
 This project uses pre-commit hooks to maintain code quality. When you make changes:
 
 ```bash
-# Fix formatting and linting issues automatically
-uv run pre-commit run --all-files
+# Fast local workflow (format + lint + basic tests)
+make pre-commit
+
+# Run exact same checks as CI (includes all pre-commit hooks)
+make pre-commit-hooks
 
 # Or run individual tools
 uv run ruff check . --fix    # Fix linting issues
 uv run ruff format .         # Fix formatting issues
+uv run pre-commit run --all-files  # Run all pre-commit hooks
 ```
 
 **If CI fails due to formatting issues:**
-1. Run `uv run pre-commit run --all-files` locally
+1. Run `make pre-commit-hooks` locally (this runs the exact same checks as CI)
 2. Commit and push the fixes
 3. CI will pass on the next run
+
+**The difference:**
+- `make pre-commit`: Fast local workflow with basic ruff checks
+- `make pre-commit-hooks`: Exact same checks as CI (includes import sorting, trailing whitespace, etc.)
 
 ### Available Commands
 

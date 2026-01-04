@@ -31,9 +31,27 @@ test: ## Run all tests
 	@echo "✅ CLI tests passed!"
 	@echo "💡 Add unit tests to tests/ directory for more comprehensive testing"
 
-pre-commit: format lint test ## Run format, lint, and tests (pre-commit workflow)
+pre-commit: ## Run format, lint, and basic tests (fast local workflow)
+	@echo "🎨 Formatting code..."
+	uv run --no-project ruff format .
+	@echo "✅ Code formatting complete!"
+	@echo "🔍 Running linting checks with fixes..."
+	uv run --no-project ruff check --fix .
+	@echo "✅ Linting complete!"
+	@echo "🧪 Running tests..."
+	@echo "Testing CLI functionality:"
+	uv run deltacat --version
+	uv run deltacat --help >/dev/null
+	@echo "✅ CLI tests passed!"
+	@echo "💡 Add unit tests to tests/ directory for more comprehensive testing"
 	@echo "🚀 Pre-commit workflow complete!"
 	@echo "✅ Code formatted, linted, and tested successfully!"
+	@echo "💡 Run 'make pre-commit-hooks' to run the exact same checks as CI"
+
+pre-commit-hooks: ## Run actual pre-commit hooks (exact same as CI)
+	@echo "🔧 Running pre-commit hooks (same as CI)..."
+	uv run pre-commit run --all-files
+	@echo "✅ Pre-commit hooks complete!"
 
 # === UTILITY COMMANDS ===
 
