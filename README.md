@@ -2,8 +2,6 @@
 
 A comprehensive command-line interface for working with DeltaCat, providing powerful tools for managing catalogs, namespaces, and tables in your data lake architecture.
 
-[![CI](https://github.com/yourusername/deltacat-cli/workflows/CI/badge.svg)](https://github.com/yourusername/deltacat-cli/actions)
-
 ## Features
 
 - **Catalog Management**: Initialize, configure, and manage DeltaCat catalogs across multiple storage backends
