@@ -190,3 +190,7 @@ Temporary Items
 .apdisk
 
 .idea/
+
+# DeltaCat local catalog files
+.deltacat/
+deltacat/
