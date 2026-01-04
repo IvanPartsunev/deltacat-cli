@@ -1,4 +1,5 @@
 import pyarrow as pa
+from deltacat.storage.model.schema import SchemaUpdateOperation, SchemaUpdateOperations
 
 from deltacat import Field, SchemaConsistencyType, SchemaEvolutionMode, TableReadOptimizationLevel
 from deltacat import Schema as DeltacatSchema
@@ -148,7 +149,52 @@ class DeltacatTableSchema:
         return DeltacatSchema.of(dc_fields)
 
     @staticmethod
-    def update(schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str) -> DeltacatSchema:
+    def create_schema_update_operations(
+        schema_updates: str | None = None, remove_columns: str | None = None
+    ) -> SchemaUpdateOperations | None:
+        """
+        Create SchemaUpdateOperations for adding and removing fields.
+
+        Args:
+            schema_updates: String format "field:type,field2:type2" for fields to add
+            remove_columns: Comma-separated column names to remove
+
+        Returns:
+            SchemaUpdateOperations object or None if no operations
+        """
+        operations = []
+
+        # Handle schema additions
+        if schema_updates:
+            schema_dict = TableSchema.of(schema_updates)
+            for field_name, field_type in schema_dict.items():
+                # Convert to PyArrow type
+                arrow_type = TYPE_MAPPING.get(field_type, TYPE_MAPPING['string'])
+                arrow_field = pa.field(name=field_name, type=arrow_type)
+                dc_field = Field.of(arrow_field)
+
+                # Create add field operation
+                add_operation = SchemaUpdateOperation.add_field(dc_field)
+                operations.append(add_operation)
+
+        # Handle column removals
+        if remove_columns:
+            columns_to_remove = [col.strip() for col in remove_columns.split(',') if col.strip()]
+            for column_name in columns_to_remove:
+                # Create remove field operation
+                remove_operation = SchemaUpdateOperation.remove_field(column_name)
+                operations.append(remove_operation)
+
+        # Create SchemaUpdateOperations if we have operations
+        if operations:
+            return SchemaUpdateOperations.of(operations)
+
+        return None
+
+    @staticmethod
+    def update(
+        schema: DeltacatSchema, schema_update: TableSchema, remove_columns: str, merge_keys: str
+    ) -> DeltacatSchema:
         """
         Only add and remove field operations are available via the DeltaCAT CLI
         """
@@ -157,7 +203,7 @@ class DeltacatTableSchema:
         remove_columns = [col.strip() for col in remove_columns.split(',') if col.strip()] if remove_columns else None
 
         schema_updater = schema.update()
-        
+
         if fields_updates:
             for field in fields_updates:
                 schema_updater.add_field(field)

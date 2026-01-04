@@ -1,10 +1,15 @@
 from typing import Annotated
 
 import typer
-from deltacat.catalog.main.impl import get_table
 
-import deltacat
-from deltacat import LifecycleState, SchemaConsistencyType, SchemaEvolutionMode, TableReadOptimizationLevel, alter_table
+from deltacat import (
+    LifecycleState,
+    SchemaConsistencyType,
+    SchemaEvolutionMode,
+    TableReadOptimizationLevel,
+    alter_table,
+    get_table,
+)
 from deltacat_cli.config import console
 from deltacat_cli.utils.catalog_context import catalog_context
 from deltacat_cli.utils.emojis import get_emoji
@@ -94,6 +99,12 @@ def alter_table_cmd(
     # Add new columns to schema
     deltacat table alter --name users --namespace prod --schema-updates "last_login:timestamp[s],status:string"
 
+    # Remove columns from schema
+    deltacat table alter --name users --namespace prod --remove-columns "old_field,deprecated_column"
+
+    # Add and remove columns in one operation
+    deltacat table alter --name users --namespace prod --schema-updates "new_field:int64" --remove-columns "old_field"
+
     # Update merge keys
     deltacat table alter --name events --namespace analytics --merge-keys "user_id,event_timestamp"
 
@@ -109,16 +120,27 @@ def alter_table_cmd(
         catalog_context.get_catalog()
         console.print(f'{get_emoji("loading")} Altering table "[cyan]{name}[/cyan]"...')
 
-        table = get_table(table=name, namespace=namespace, table_version=table_version)
+        table = get_table(table=name, namespace=namespace, catalog=catalog_name, table_version=table_version)
 
-        dc_schema = None
+        dc_schema_updates = None
         if schema_updates or remove_columns:
-            # Get the original schema
-            original_schema = table.table_version.schema
-            schema_updates = TableSchema.of(schema_updates)
+            console.print(f'{get_emoji("loading")} Processing schema updates...')
 
-            # Apply updates
-            dc_schema = DeltacatTableSchema.update(original_schema, schema_updates, remove_columns, merge_keys)
+            # Use the utility method to create schema update operations
+            dc_schema_updates = DeltacatTableSchema.create_schema_update_operations(
+                schema_updates=schema_updates, remove_columns=remove_columns
+            )
+
+            # Log the operations being performed
+            if schema_updates:
+                schema_dict = TableSchema.of(schema_updates)
+                for field_name, field_type in schema_dict.items():
+                    console.print(f'  {get_emoji("success")} Adding field: {field_name} ({field_type})')
+
+            if remove_columns:
+                columns_to_remove = [col.strip() for col in remove_columns.split(',') if col.strip()]
+                for column_name in columns_to_remove:
+                    console.print(f'  {get_emoji("warning")} Removing field: {column_name}')
 
         # Prepare table properties if any property is specified
         table_properties = None
@@ -149,7 +171,7 @@ def alter_table_cmd(
             catalog=catalog_name,
             table_version=table_version,
             lifecycle_state=lifecycle_state,
-            schema_updates=dc_schema,
+            schema_updates=dc_schema_updates,
             table_description=table_description,
             table_version_description=table_version_description,
             table_properties=table_properties,
@@ -158,8 +180,10 @@ def alter_table_cmd(
         console.print(
             f'{get_emoji("success")} Table "[bold cyan]{name}[/bold cyan]" altered successfully.', style='green'
         )
-        deltacat.refresh_table(table.table_version.name)
-        print_as_json(source_type='table', data=table)
+
+        # Refresh and print the updated table
+        updated_table = get_table(table=name, namespace=namespace, catalog=catalog_name)
+        print_as_json(source_type='table', data=updated_table)
 
     except Exception as e:
         handle_catalog_error(e, 'altering table')
