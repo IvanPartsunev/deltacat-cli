@@ -181,7 +181,7 @@ deltacat table alter \
 deltacat catalog init --name dev --root ~/.deltacat/dev
 deltacat namespace create --name dev_analytics --properties environment=development
 
-# Staging environment  
+# Staging environment
 deltacat catalog init --name staging --root s3://staging-bucket/deltacat
 deltacat namespace create --name staging_analytics --properties environment=staging
 

@@ -267,7 +267,7 @@ deltacat table drop --name old_table --namespace test --drop
 
 ### Table Properties
 
-1. **Optimize for your workload**: 
+1. **Optimize for your workload**:
    - Use `MAX` read optimization for read-heavy workloads
    - Use `NONE` for write-heavy workloads where compaction overhead is a concern
 

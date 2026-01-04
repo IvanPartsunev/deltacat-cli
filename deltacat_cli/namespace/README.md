@@ -188,7 +188,7 @@ Organize namespaces by environment:
 deltacat namespace create --name dev_analytics --description "Development analytics data"
 deltacat namespace create --name dev_user_data --description "Development user data"
 
-# Staging environment  
+# Staging environment
 deltacat namespace create --name staging_analytics --description "Staging analytics data"
 deltacat namespace create --name staging_user_data --description "Staging user data"
 
@@ -245,7 +245,7 @@ deltacat namespace create \
    deltacat namespace create --name user_analytics
    deltacat namespace create --name financial_reporting
    deltacat namespace create --name ml_training_data
-   
+
    # Avoid generic names
    deltacat namespace create --name data1
    deltacat namespace create --name temp
@@ -257,7 +257,7 @@ deltacat namespace create \
    deltacat namespace create --name prod_user_data
    deltacat namespace create --name staging_user_data
    deltacat namespace create --name dev_user_data
-   
+
    # Domain suffix pattern
    deltacat namespace create --name analytics_prod
    deltacat namespace create --name analytics_staging
@@ -267,7 +267,7 @@ deltacat namespace create \
    ```bash
    # Recommended
    deltacat namespace create --name user_behavior_analytics
-   
+
    # Avoid
    deltacat namespace create --name UserBehaviorAnalytics
    deltacat namespace create --name user-behavior-analytics
@@ -311,7 +311,7 @@ deltacat namespace create \
    ```bash
    # List all namespaces to identify unused ones
    deltacat namespace list
-   
+
    # Drop unused namespaces
    deltacat namespace drop --name unused_test_namespace
    ```
@@ -320,10 +320,10 @@ deltacat namespace create \
    ```bash
    # Create new namespace
    deltacat namespace create --name new_analytics
-   
+
    # Migrate tables (application-specific process)
    # ...
-   
+
    # Drop old namespace after migration
    deltacat namespace drop --name old_analytics
    ```

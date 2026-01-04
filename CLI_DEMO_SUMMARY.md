@@ -129,7 +129,7 @@ deltacat table drop --name temp_table --namespace analytics --drop
 
 ### 2. **Data Type Support**
 - ✅ `int64` - Integer fields
-- ✅ `string` - Text fields  
+- ✅ `string` - Text fields
 - ✅ `timestamp[s]` - Timestamp with second precision
 - ✅ `float64` - Floating point numbers
 
@@ -179,7 +179,7 @@ Updated:  10,000,000 records × 32 buckets × 2 = 640,000,000 trigger
 
 **Namespaces**:
 - `analytics` - Contains user_events table
-- `production` - Empty, ready for production tables  
+- `production` - Empty, ready for production tables
 - `default` - System default namespace
 
 **Tables**:

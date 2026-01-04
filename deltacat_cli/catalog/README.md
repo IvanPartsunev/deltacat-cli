@@ -177,12 +177,12 @@ Different storage backends have different requirements:
    # Good examples
    deltacat catalog init --name prod_analytics --root s3://analytics-prod/deltacat
    deltacat catalog init --name dev_local --root ~/.deltacat/development
-   
+
    # Avoid generic names
    deltacat catalog init --name catalog1 --root /tmp/deltacat
    ```
 
-3. **Security**: 
+3. **Security**:
    - Use appropriate access controls for cloud storage
    - Avoid storing sensitive catalogs in publicly accessible locations
    - Use IAM roles and policies to control access

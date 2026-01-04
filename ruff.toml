@@ -7,7 +7,7 @@ indent-width = 4
 # Enable essential rule sets + type checking
 select = [
     "E",      # pycodestyle errors (basic syntax issues)
-    "W",      # pycodestyle warnings (basic style issues)  
+    "W",      # pycodestyle warnings (basic style issues)
     "F",      # Pyflakes (unused imports, undefined names)
     "I",      # isort (import sorting)
     "ANN",    # flake8-annotations (type checking)
@@ -21,17 +21,17 @@ select = [
 ignore = [
     # All docstring rules - too pedantic for CLI development
     "D",      # All pydocstring rules
-    
+
     # Formatter conflicts - let formatter handle these
     "COM812", # Trailing comma missing
-    "COM819", # Trailing comma prohibited  
+    "COM819", # Trailing comma prohibited
     "ISC001", # Implicitly concatenated string literals
     "Q000",   # Single quotes
     "Q001",   # Single quotes
-    "Q002",   # Single quotes  
+    "Q002",   # Single quotes
     "Q003",   # Single quotes
     "E501",   # Line too long
-    
+
     # CLI app specific - these are normal in CLI applications
     "S101",   # Use of assert
     "T20",    # Print statements (needed for CLI output)
@@ -40,7 +40,7 @@ ignore = [
     "FBT001", # Boolean positional args
     "FBT002", # Boolean default args
     "FBT003", # Boolean positional args
-    
+
     # Too pedantic - these make development annoying
     "A001",   # Variable shadowing builtin
     "A002",   # Argument shadowing builtin
@@ -57,29 +57,29 @@ ignore = [
     "PTH118", # Use Path.joinpath()
     "PTH119", # Use Path.resolve()
     "PTH120", # Use Path.exists()
-    
+
     # Type annotation rules - keep most but ignore the overly strict ones
     "ANN204", # Missing return type annotation for __init__
     "ANN401", # Dynamically typed expressions (Any) disallowed
-    
+
     # TODO/FIXME rules - too pedantic during development
     "TD",     # All TODO rules
     "FIX",    # All FIXME rules
-    
+
     # Complexity rules - too strict for CLI functions
     "PLR0913", # Too many arguments
     "PLR0912", # Too many branches
     "PLR0915", # Too many statements
     "PLR2004", # Magic value comparison
     "C901",   # Complex structure
-    
+
     # Argument rules - too strict
     "ARG001", # Unused function argument
     "ARG002", # Unused method argument
     "ARG003", # Unused class method argument
     "ARG004", # Unused static method argument
     "ARG005", # Unused lambda argument
-    
+
     # Other pedantic rules
     "B008",   # Function call in argument defaults
     "B006",   # Mutable argument defaults
