@@ -26,6 +26,10 @@ lint: ## Run all linting checks and fixes
 	uv run --no-project ruff check --fix .
 	@echo "✅ Linting complete!"
 
+lint-check: ## Check linting without making fixes
+	@echo "🔍 Checking linting..."
+	uv run --no-project ruff check .
+
 test: ## Run all tests
 	@echo "🧪 Running tests..."
 	@echo "Testing CLI functionality:"
@@ -36,6 +40,21 @@ test: ## Run all tests
 
 pre-commit: ## Run pre-commit hooks (same as CI)
 	@echo "🔧 Running pre-commit hooks (same as CI)..."
+	uv run pre-commit run --all-files
+	@echo "🧪 Running basic CLI tests..."
+	uv run deltacat --version
+	uv run deltacat --help >/dev/null
+	@echo "✅ CLI tests passed!"
+	@echo "🚀 Pre-commit workflow complete!"
+	@echo "✅ All checks passed - ready to commit!"
+
+pre-commit-fix: ## Run pre-commit hooks with auto-fixes
+	@echo "🔧 Running pre-commit hooks with auto-fixes..."
+	@echo "🔍 Auto-fixing linting issues..."
+	uv run --no-project ruff check --fix .
+	@echo "🎨 Auto-formatting code..."
+	uv run --no-project ruff format .
+	@echo "🔧 Running remaining pre-commit hooks..."
 	uv run pre-commit run --all-files
 	@echo "🧪 Running basic CLI tests..."
 	uv run deltacat --version
@@ -70,10 +89,6 @@ dev-setup: install ## Complete development environment setup
 format-check: ## Check code formatting without making changes
 	@echo "🔍 Checking code formatting..."
 	uv run --no-project ruff format --check .
-
-lint-check: ## Check linting without making fixes
-	@echo "🔍 Checking linting..."
-	uv run --no-project ruff check .
 
 check: format-check lint-check ## Run all checks without making changes
 	@echo "✅ All checks passed!"
