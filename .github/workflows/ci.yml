@@ -26,7 +26,15 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
 
-      - name: Linting
+      - name: Check code formatting with ruff
+        run: |
+          echo "Checking code formatting..."
+          uv run ruff check . --diff
+          uv run ruff format . --check --diff
+
+      - name: Run other pre-commit hooks
+        env:
+          SKIP: ruff-check,ruff-format
         run: uv run pre-commit run --all-files
 
   build-and-test:
@@ -48,12 +56,13 @@ jobs:
       - name: Install dependencies
         run: uv sync --extra dev
 
-      # Uncomment when you have real tests
-      # - name: Run unit tests
-      #   run: uv run pytest
+      - name: Run unit tests
+        run: uv run pytest tests/ -v
 
-#      - name: Test CLI functionality
-#        run: make test-cli
-#
-#      - name: Build package
-#        run: make build
+      - name: Test CLI functionality
+        run: |
+          uv run deltacat --version
+          uv run deltacat --help >/dev/null
+
+      - name: Build package
+        run: uv build
