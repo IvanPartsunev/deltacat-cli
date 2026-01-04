@@ -29,6 +29,7 @@ jobs:
       - name: Check code formatting with ruff
         run: |
           echo "Checking code formatting..."
+          echo "If this fails, run 'make pre-commit' locally and commit the fixes"
           uv run ruff check . --diff
           uv run ruff format . --check --diff
 
