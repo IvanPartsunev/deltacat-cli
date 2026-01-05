@@ -23,10 +23,10 @@ classifiers = [
 ]
 requires-python = "==3.10.*"
 dependencies = [
-    "deltacat==2.0.0.post4",
     "s3fs>=2025.3.2",
     "typer>=0.20.0",
     "rich>=13.0.0",
+    "deltacat",
 ]
 
 [project.urls]
@@ -73,6 +73,9 @@ packages = ["deltacat_cli"]
 
 [tool.hatch.version]
 path = "deltacat_cli/__init__.py"
+
+[tool.uv.sources]
+deltacat = { git = "https://github.com/ray-project/deltacat.git" }
 
 [build-system]
 requires = ["hatchling"]
