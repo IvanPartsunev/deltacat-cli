@@ -4,6 +4,7 @@ from deltacat_cli.table.alter import app as alter_app
 from deltacat_cli.table.create import app as create_app
 from deltacat_cli.table.drop import app as drop_app
 from deltacat_cli.table.get import app as get_app
+from deltacat_cli.table.list import app as list_app
 from deltacat_cli.table.read import app as read_app
 
 
@@ -15,3 +16,4 @@ app.add_typer(create_app)
 app.add_typer(drop_app)
 app.add_typer(alter_app)
 app.add_typer(read_app)
+app.add_typer(list_app)

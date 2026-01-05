@@ -31,7 +31,7 @@ def read_table_cmd(
             table=name, namespace=namespace, columns=column_list, table_version=table_version, catalog=catalog_name
         )
         console.print(f'{get_emoji("success")} Table "[bold cyan]{name}[/bold cyan]" read successfully', style='green')
-        table.show(limit=num_rows, format='markdown')
+        table.show(num_rows, format='markdown')
 
     except Exception as e:
         handle_catalog_error(e, 'read table')

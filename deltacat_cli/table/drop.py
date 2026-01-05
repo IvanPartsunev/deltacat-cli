@@ -30,7 +30,7 @@ def drop_table_cmd(
 
             drop_table(table=name, namespace=namespace, catalog=catalog_name)
             console.print(
-                f'{get_emoji("success")} Namespace "[bold cyan]{name}[/bold cyan]" dropped successfully', style='green'
+                f'{get_emoji("success")} Table "[bold cyan]{name}[/bold cyan]" dropped successfully', style='green'
             )
 
         except Exception as e:
