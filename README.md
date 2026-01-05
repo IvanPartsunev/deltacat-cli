@@ -17,6 +17,10 @@ A comprehensive command-line interface for working with DeltaCat, providing powe
 pip install deltacat-cli
 ```
 
+```bash
+deltacat --install-completion
+```
+
 ## Quick Start
 
 1. **Initialize a catalog:**
