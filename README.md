@@ -72,6 +72,8 @@ deltacat table create     # Create a new table
 deltacat table get        # Get table information
 deltacat table alter      # Modify table schema and properties
 deltacat table drop       # Delete a table
+deltacat table list       # List tables in a namespace
+deltacat table read       # Read table data
 ```
 
 ## Detailed Documentation
