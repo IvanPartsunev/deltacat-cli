@@ -20,7 +20,10 @@ def read_table_cmd(
     table_version: Annotated[str | None, typer.Option(help='Optional specific version of the table to read')] = None,
     num_rows: Annotated[int, typer.Option(help='Number of rows to visualize. Default to 10.')] = 20,
 ) -> None:
-    """Read the Table data with the given name and given namespace."""
+    """
+    Read the Table data with the given name and given namespace.
+    If the table is empty TypeError will be raised `DataFrame.__init__() missing 1 required positional argument: 'builder'`
+    """
     try:
         catalog_name, _ = catalog_context.get_catalog_info(silent=True)
         catalog_context.get_catalog()

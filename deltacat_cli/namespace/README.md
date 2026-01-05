@@ -17,17 +17,12 @@ The DeltaCat CLI namespace module provides commands for managing namespaces with
 Create a new namespace in the current catalog.
 
 ```bash
-deltacat namespace create --name NAMESPACE_NAME [OPTIONS]
+deltacat namespace create --name NAMESPACE_NAME
 ```
 
 #### Required Arguments
 
 - `--name` - Unique name for the namespace
-
-#### Optional Arguments
-
-- `--description` - Description of the namespace
-- `--properties` - Additional properties as key=value pairs (can be specified multiple times)
 
 #### Examples
 
@@ -36,64 +31,39 @@ deltacat namespace create --name NAMESPACE_NAME [OPTIONS]
 deltacat namespace create --name analytics
 ```
 
-**Namespace with description:**
+**Create namespace for different environments:**
 ```bash
-deltacat namespace create \
-  --name user_data \
-  --description "Contains all user-related tables and datasets"
-```
-
-**Namespace with properties:**
-```bash
-deltacat namespace create \
-  --name production \
-  --description "Production data namespace" \
-  --properties owner=data-team \
-  --properties environment=prod \
-  --properties retention_days=365
+deltacat namespace create --name production
+deltacat namespace create --name staging
+deltacat namespace create --name development
 ```
 
 ### alter
 
-Modify an existing namespace's properties or rename it.
+Rename an existing namespace in the current catalog.
 
 ```bash
-deltacat namespace alter --name NAMESPACE_NAME [OPTIONS]
+deltacat namespace alter --name NAMESPACE_NAME --new-name NEW_NAME
 ```
 
 #### Required Arguments
 
-- `--name` - Name of the namespace to alter
-
-#### Optional Arguments
-
-- `--new-name` - New name for the namespace (renames the namespace)
-- `--description` - New description for the namespace
-- `--properties` - Update properties as key=value pairs
+- `--name` - Current name of the namespace to alter
+- `--new-name` - New name for the namespace
 
 #### Examples
 
-**Update namespace description:**
-```bash
-deltacat namespace alter \
-  --name analytics \
-  --description "Updated analytics namespace with ML datasets"
-```
-
 **Rename a namespace:**
 ```bash
-deltacat namespace alter \
-  --name old_name \
-  --new-name new_name
+deltacat namespace alter --name old_analytics --new-name analytics_v2
 ```
 
-**Update namespace properties:**
+**Rename development namespace:**
 ```bash
-deltacat namespace alter \
-  --name production \
-  --properties owner=new-team \
-  --properties last_updated=2024-01-01
+deltacat namespace alter --name dev --new-name development
 ```
+
+**Note:** Currently only supports renaming namespaces. Other alterations like description or properties are not yet implemented.
 
 ### get
 
@@ -113,44 +83,27 @@ deltacat namespace get --name NAMESPACE_NAME
 deltacat namespace get --name analytics
 ```
 
-The command returns detailed JSON information including:
-- Namespace metadata (name, description, creation time)
-- Properties and configuration
-- Statistics (number of tables, etc.)
+The command returns detailed JSON information about the namespace including metadata and configuration.
 
 ### list
 
 List all namespaces in the current catalog.
 
 ```bash
-deltacat namespace list [OPTIONS]
+deltacat namespace list
 ```
-
-#### Optional Arguments
-
-- `--format` - Output format (table, json) - default: table
-- `--show-properties` - Include namespace properties in the output
 
 #### Examples
 
-**List namespaces in table format:**
 ```bash
 deltacat namespace list
 ```
 
-**List namespaces with properties:**
-```bash
-deltacat namespace list --show-properties
-```
-
-**List namespaces in JSON format:**
-```bash
-deltacat namespace list --format json
-```
+This command displays all namespaces in the current catalog with their basic information.
 
 ### drop
 
-Delete a namespace from the catalog. This operation requires confirmation and will fail if the namespace contains tables.
+Delete a namespace from the catalog.
 
 ```bash
 deltacat namespace drop --name NAMESPACE_NAME [OPTIONS]
@@ -162,20 +115,17 @@ deltacat namespace drop --name NAMESPACE_NAME [OPTIONS]
 
 #### Optional Arguments
 
-- `--force` - Force deletion even if namespace contains tables (use with caution)
-- `--drop` - Confirmation flag (will prompt if not provided)
+- `--purge` - Purge all data (not implemented yet) - default: no-purge
+- `--drop` - Confirmation flag - default: no-drop
 
 #### Examples
 
-**Drop an empty namespace:**
+**Drop a namespace:**
 ```bash
-deltacat namespace drop --name test_namespace
+deltacat namespace drop --name test_namespace --drop
 ```
 
-**Force drop a namespace with tables:**
-```bash
-deltacat namespace drop --name old_namespace --force --drop
-```
+**Note:** The `--purge` option is not yet implemented. Use `--drop` flag to confirm the operation.
 
 ## Namespace Design Patterns
 
@@ -185,16 +135,16 @@ Organize namespaces by environment:
 
 ```bash
 # Development environment
-deltacat namespace create --name dev_analytics --description "Development analytics data"
-deltacat namespace create --name dev_user_data --description "Development user data"
+deltacat namespace create --name dev_analytics
+deltacat namespace create --name dev_user_data
 
 # Staging environment
-deltacat namespace create --name staging_analytics --description "Staging analytics data"
-deltacat namespace create --name staging_user_data --description "Staging user data"
+deltacat namespace create --name staging_analytics
+deltacat namespace create --name staging_user_data
 
 # Production environment
-deltacat namespace create --name prod_analytics --description "Production analytics data"
-deltacat namespace create --name prod_user_data --description "Production user data"
+deltacat namespace create --name prod_analytics
+deltacat namespace create --name prod_user_data
 ```
 
 ### Domain-Based Organization
@@ -203,16 +153,16 @@ Organize namespaces by business domain:
 
 ```bash
 # User domain
-deltacat namespace create --name users --description "User profiles, authentication, preferences"
+deltacat namespace create --name users
 
 # Analytics domain
-deltacat namespace create --name analytics --description "Event tracking, metrics, reporting"
+deltacat namespace create --name analytics
 
 # Financial domain
-deltacat namespace create --name finance --description "Transactions, billing, revenue data"
+deltacat namespace create --name finance
 
 # ML domain
-deltacat namespace create --name ml_features --description "Machine learning features and models"
+deltacat namespace create --name ml_features
 ```
 
 ### Team-Based Organization
@@ -221,18 +171,10 @@ Organize namespaces by team ownership:
 
 ```bash
 # Data engineering team
-deltacat namespace create \
-  --name data_eng \
-  --description "Data engineering pipelines and infrastructure" \
-  --properties team=data-engineering \
-  --properties contact=data-eng@company.com
+deltacat namespace create --name data_eng
 
 # Analytics team
-deltacat namespace create \
-  --name analytics_team \
-  --description "Business analytics and reporting" \
-  --properties team=analytics \
-  --properties contact=analytics@company.com
+deltacat namespace create --name analytics_team
 ```
 
 ## Best Practices
@@ -275,28 +217,42 @@ deltacat namespace create \
 
 ### Properties and Metadata
 
-1. **Document ownership**: Always specify who owns the namespace
+Currently, the CLI supports basic namespace operations. Advanced features like custom properties and detailed metadata are not yet implemented but may be added in future versions.
+
+### Naming Conventions
+
+1. **Use descriptive names**: Choose names that clearly indicate the namespace purpose
    ```bash
-   deltacat namespace create \
-     --name critical_data \
-     --properties owner=data-platform-team \
-     --properties contact=data-platform@company.com
+   # Good examples
+   deltacat namespace create --name user_analytics
+   deltacat namespace create --name financial_reporting
+   deltacat namespace create --name ml_training_data
+
+   # Avoid generic names
+   deltacat namespace create --name data1
+   deltacat namespace create --name temp
    ```
 
-2. **Set retention policies**: Document data retention requirements
+2. **Use consistent patterns**: Establish and follow naming conventions
    ```bash
-   deltacat namespace create \
-     --name user_events \
-     --properties retention_days=730 \
-     --properties compliance=gdpr
+   # Environment prefix pattern
+   deltacat namespace create --name prod_user_data
+   deltacat namespace create --name staging_user_data
+   deltacat namespace create --name dev_user_data
+
+   # Domain suffix pattern
+   deltacat namespace create --name analytics_prod
+   deltacat namespace create --name analytics_staging
    ```
 
-3. **Environment tagging**: Tag namespaces with environment information
+3. **Use lowercase with underscores**: Follow standard naming conventions
    ```bash
-   deltacat namespace create \
-     --name analytics \
-     --properties environment=production \
-     --properties criticality=high
+   # Recommended
+   deltacat namespace create --name user_behavior_analytics
+
+   # Avoid
+   deltacat namespace create --name UserBehaviorAnalytics
+   deltacat namespace create --name user-behavior-analytics
    ```
 
 ### Security and Access Control
@@ -313,7 +269,7 @@ deltacat namespace create \
    deltacat namespace list
 
    # Drop unused namespaces
-   deltacat namespace drop --name unused_test_namespace
+   deltacat namespace drop --name unused_test_namespace --drop
    ```
 
 2. **Migration planning**: Plan namespace changes carefully
@@ -325,7 +281,7 @@ deltacat namespace create \
    # ...
 
    # Drop old namespace after migration
-   deltacat namespace drop --name old_analytics
+   deltacat namespace drop --name old_analytics --drop
    ```
 
 ## Error Handling
@@ -349,8 +305,10 @@ deltacat namespace list
 **Cannot Drop Non-Empty Namespace:**
 ```bash
 # Error: Cannot drop namespace 'data' - contains tables
-# Solution: Drop tables first or use --force flag
-deltacat namespace drop --name data --force
+# Solution: Drop tables first or use --purge flag (when implemented)
+# For now, manually drop all tables in the namespace first
+deltacat table list --namespace data
+# Drop each table individually, then drop the namespace
 ```
 
 **Permission Denied:**

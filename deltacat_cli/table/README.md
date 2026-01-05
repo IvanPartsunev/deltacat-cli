@@ -7,6 +7,8 @@ The DeltaCat CLI provides comprehensive table management capabilities for workin
 - [`create`](#create) - Create a new DeltaCat table
 - [`alter`](#alter) - Modify an existing table's properties and schema
 - [`get`](#get) - Retrieve table information
+- [`list`](#list) - List tables in a namespace
+- [`read`](#read) - Read table data
 - [`drop`](#drop) - Delete a table
 
 ## Command Reference
@@ -226,6 +228,77 @@ The command returns detailed JSON information about the table including:
 - Schema definition with field types and merge keys
 - Table properties and configuration
 - Version information
+
+### list
+
+List all tables in a namespace or get information about a specific table's versions.
+
+```bash
+deltacat table list --namespace NAMESPACE [OPTIONS]
+```
+
+#### Required Arguments
+
+- `--namespace` - Namespace from where to list tables
+
+#### Optional Arguments
+
+- `--table` - Optional table name to list its versions. If not specified, lists the latest active version of each table in the namespace
+
+#### Examples
+
+**List all tables in a namespace:**
+```bash
+deltacat table list --namespace prod
+```
+
+**List versions of a specific table:**
+```bash
+deltacat table list --namespace prod --table users
+```
+
+### read
+
+Read and display data from a table.
+
+```bash
+deltacat table read --name TABLE_NAME --namespace NAMESPACE [OPTIONS]
+```
+
+#### Required Arguments
+
+- `--name` - Table name to read
+- `--namespace` - Namespace name where table is located
+
+#### Optional Arguments
+
+- `--columns` - Optional comma-separated column names to include
+- `--table-version` - Optional specific version of the table to read
+- `--num-rows` - Number of rows to display (default: 20)
+
+#### Examples
+
+**Read all data from a table (limited to 20 rows):**
+```bash
+deltacat table read --name users --namespace prod
+```
+
+**Read specific columns:**
+```bash
+deltacat table read --name users --namespace prod --columns "id,name,email"
+```
+
+**Read more rows:**
+```bash
+deltacat table read --name users --namespace prod --num-rows 50
+```
+
+**Read a specific table version:**
+```bash
+deltacat table read --name users --namespace prod --table-version "2"
+```
+
+**Note:** Reading empty tables may fail due to a known issue in the deltacat library. Ensure tables have data before attempting to read them.
 
 ### drop
 
